@@ -37,4 +37,15 @@ public class UserService {
         return this.userRepository.save(user);
     }
 
+    public void deleteUser(Integer userId) {
+        Optional<User> userOptional = this.userRepository.findById(userId);
+        if (userOptional.isEmpty()) {
+            LOG.debug("[UserService] User not found with userId: {}", userId);
+            throw new IllegalStateException("User not found for ID: " + userId);
+        } else {
+            this.userRepository.deleteById(userId);
+            LOG.debug("[UserService] User with userId {} was found and deleted", userId);
+        }
+    }
+
 }

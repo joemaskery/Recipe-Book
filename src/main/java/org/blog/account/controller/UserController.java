@@ -18,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/get/{userId}")
-    public ResponseEntity<User> getUser(@PathVariable (value = "userId") Integer userId) {
+    public ResponseEntity<User> getUser(@PathVariable(value = "userId") Integer userId) {
         LOG.info("[UserController] Received request to get user with ID: {}", userId);
         return ResponseEntity.ok(this.userService.getUser(userId));
     }
@@ -33,6 +33,13 @@ public class UserController {
     public ResponseEntity<User> addUser(@RequestBody User user) {
         LOG.info("[UserController] Received request to add user - executing addUser");
         return ResponseEntity.ok(this.userService.addUser(user));
+    }
+
+    @DeleteMapping("/delete/userId")
+    public ResponseEntity<String> deleteUser(@PathVariable(value = "userId") Integer userId) {
+        LOG.info("[UserController] Received request to delete user {}", userId);
+        this.userService.deleteUser(userId);
+        return ResponseEntity.ok("Successfully deleted user " + userId);
     }
 
 }
