@@ -1,0 +1,14 @@
+services:
+
+  mariadb:
+    image: mariadb:11.2.2
+    container_name: blogdb
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: blog_db
+      MYSQL_USER: jim
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./mariadb:/var/lib/mysql
