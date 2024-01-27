@@ -2,6 +2,7 @@ package org.blog.account.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.blog.account.dto.UpdateUserRequest;
 import org.blog.account.entity.User;
 import org.blog.account.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -35,11 +36,16 @@ public class UserController {
         return ResponseEntity.ok(this.userService.addUser(user));
     }
 
-    @DeleteMapping("/delete/userId")
+    @DeleteMapping("/delete/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable(value = "userId") Integer userId) {
         LOG.info("[UserController] Received request to delete user {}", userId);
         this.userService.deleteUser(userId);
         return ResponseEntity.ok("Successfully deleted user " + userId);
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<User> updateUser(@RequestBody UpdateUserRequest request) {
+        LOG.info("[UserController] Received request to update user {}", request.getUserId());
+        return ResponseEntity.ok(this.userService.updateUser(request));
+    }
 }
