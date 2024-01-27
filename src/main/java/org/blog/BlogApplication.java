@@ -1,6 +1,5 @@
 package org.blog;
 
-import org.blog.account.entity.User;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
