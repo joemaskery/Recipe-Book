@@ -6,6 +6,7 @@ import org.blog.account.entity.User;
 import org.blog.account.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,16 +19,21 @@ public class UserService {
     public User getUser(Integer userId) {
         Optional<User> userOptional = this.userRepository.findById(userId);
         if (userOptional.isEmpty()) {
-            LOG.debug("User not found with userId: {}", userId);
+            LOG.debug("[UserService] User not found with userId: {}", userId);
             throw new IllegalStateException("User not found for ID: " + userId);
         } else {
-            LOG.debug("Found User with userId: {}", userId);
+            LOG.debug("[UserService] Found User with userId: {}", userId);
             return userOptional.get();
         }
     }
 
+    public List<User> getAllUsers() {
+        LOG.debug("[UserService] Returning all users");
+        return this.userRepository.findAll();
+    }
+
     public User addUser(User user) {
-        LOG.debug("Saving user: {}", user);
+        LOG.debug("[UserService] Saving user: {}", user);
         return this.userRepository.save(user);
     }
 
