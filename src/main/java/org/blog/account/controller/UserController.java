@@ -2,6 +2,7 @@ package org.blog.account.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.blog.account.dto.AddUserRequest;
 import org.blog.account.dto.UpdateUserRequest;
 import org.blog.account.entity.User;
 import org.blog.account.service.UserService;
@@ -31,9 +32,9 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<User> addUser(@RequestBody User user) {
-        LOG.info("[UserController] Received request to add user - executing addUser");
-        return ResponseEntity.ok(this.userService.addUser(user));
+    public ResponseEntity<User> addUser(@RequestBody AddUserRequest request) {
+        LOG.info("[UserController] Received request to add user {}", request.getEmail());
+        return ResponseEntity.ok(this.userService.addUser(request));
     }
 
     @DeleteMapping("/delete/{userId}")

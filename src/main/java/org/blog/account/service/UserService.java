@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.blog.account.dto.AddUserRequest;
 import org.blog.account.dto.UpdateUserRequest;
 import org.blog.account.entity.User;
 import org.blog.account.repository.UserRepository;
@@ -35,9 +36,17 @@ public class UserService {
         return this.userRepository.findAll();
     }
 
-    public User addUser(User user) {
-        LOG.debug("[UserService] Saving user: {}", user);
-        return this.userRepository.save(user);
+    public User addUser(AddUserRequest request) {
+        LOG.debug("[UserService] Saving user: {}", request);
+        return this.userRepository.save(this.mapToUser(request));
+    }
+
+    private User mapToUser(AddUserRequest request) {
+        return User.builder()
+                .firstName(request.getFirstName())
+                .secondName(request.getSecondName())
+                .email(request.getEmail())
+                .build();
     }
 
     public void deleteUser(Integer userId) {
