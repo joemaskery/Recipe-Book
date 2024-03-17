@@ -38,6 +38,7 @@ dependencies {
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:mariadb'
     testImplementation 'org.testcontainers:rabbitmq'
+    testImplementation 'io.rest-assured:rest-assured'
 }
 
 tasks.named('test') {
