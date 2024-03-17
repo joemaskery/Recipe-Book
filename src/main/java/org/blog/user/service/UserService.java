@@ -1,13 +1,13 @@
-package org.blog.account.service;
+package org.blog.user.service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.blog.account.dto.AddUserRequest;
-import org.blog.account.dto.UpdateUserRequest;
-import org.blog.account.entity.User;
-import org.blog.account.repository.UserRepository;
+import org.blog.user.dto.AddUserRequest;
+import org.blog.user.dto.UpdateUserRequest;
+import org.blog.user.entity.User;
+import org.blog.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

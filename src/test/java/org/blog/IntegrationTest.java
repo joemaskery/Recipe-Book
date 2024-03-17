@@ -1,8 +1,8 @@
 package org.blog;
 
 import io.restassured.RestAssured;
-import org.blog.account.entity.User;
-import org.blog.account.repository.UserRepository;
+import org.blog.user.entity.User;
+import org.blog.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
