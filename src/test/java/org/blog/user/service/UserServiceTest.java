@@ -1,5 +1,6 @@
 package org.blog.user.service;
 
+import org.blog.user.dto.AddUserRequest;
 import org.blog.user.dto.UpdateUserRequest;
 import org.blog.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,12 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
+
+    private static final String INVALID_FIRST_NAME_MESSAGE = "First Name must not be blank";
+    private static final String INVALID_SECOND_NAME_MESSAGE = "Second Name must not be blank";
+    private static final String INVALID_EMAIL_MESSAGE = "Invalid email address";
+    private static final String INVALID_PASSWORD_MESSAGE = "Password must not be blank";
+    private static final String PASSWORDS_DONT_MATCH_MESSAGE = "Passwords do not match";
 
     @Mock UserRepository userRepository;
     @InjectMocks UserService underTest;
@@ -50,6 +57,25 @@ class UserServiceTest {
         assertThatThrownBy(() -> underTest.deleteUser(1))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("User not found for ID: 1");
+    }
+
+    @Test
+    void addUser_correctly_validates_requests() {
+        // given
+        final var addUserRequest = AddUserRequest.builder()
+                .firstName(" ")
+                .secondName(" ")
+                .email("invalid-email@email")
+                .password1(" ")
+                .password2("password2")
+                .build();
+
+        // when, then
+        assertThatThrownBy(() -> underTest.addUser(addUserRequest))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(String.format("Invalid request to add user: [%s, %s, %s, %s, %s]",
+                        INVALID_FIRST_NAME_MESSAGE, INVALID_SECOND_NAME_MESSAGE, INVALID_EMAIL_MESSAGE,
+                        INVALID_PASSWORD_MESSAGE, PASSWORDS_DONT_MATCH_MESSAGE));
     }
 
 }

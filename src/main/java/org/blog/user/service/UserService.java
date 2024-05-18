@@ -4,13 +4,17 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.validator.routines.EmailValidator;
+import org.apache.coyote.BadRequestException;
 import org.blog.user.dto.AddUserRequest;
 import org.blog.user.dto.UpdateUserRequest;
 import org.blog.user.entity.User;
 import org.blog.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -37,8 +41,34 @@ public class UserService {
     }
 
     public User addUser(AddUserRequest request) {
+        this.validateAddUserRequest(request);
         LOG.debug("[UserService] Saving user: {}", request);
         return this.userRepository.save(this.mapToUser(request));
+    }
+
+    private void validateAddUserRequest(AddUserRequest request) {
+        LOG.debug("[UserService] Validating addUserRequest: {}", request);
+        List<String> validationErrors = new ArrayList<>();
+        if (StringUtils.isBlank(request.getFirstName())) {
+            validationErrors.add("First Name must not be blank");
+        }
+        if (StringUtils.isBlank(request.getSecondName())) {
+            validationErrors.add("Second Name must not be blank");
+        }
+        if (!EmailValidator.getInstance().isValid(request.getEmail())) {
+            validationErrors.add("Invalid email address");
+        }
+        if (StringUtils.isBlank(request.getPassword1())) {
+            validationErrors.add("Password must not be blank");
+        }
+        if (!Objects.equals(request.getPassword1(), request.getPassword2())) {
+            validationErrors.add("Passwords do not match");
+        }
+
+        if (!validationErrors.isEmpty()) {
+            LOG.error("[UserService] addUserRequest failed validation with errors: {}", validationErrors);
+            throw new IllegalStateException("Invalid request to add user: " + validationErrors);
+        }
     }
 
     private User mapToUser(AddUserRequest request) {
