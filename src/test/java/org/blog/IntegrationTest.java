@@ -33,6 +33,9 @@ public class IntegrationTest {
         registry.add("spring.datasource.url", mariaDBContainer::getJdbcUrl);
         registry.add("spring.datasource.username", mariaDBContainer::getUsername);
         registry.add("spring.datasource.password", mariaDBContainer::getPassword);
+        registry.add("spring.flyway.url", mariaDBContainer::getJdbcUrl);
+        registry.add("spring.flyway.user", mariaDBContainer::getUsername);
+        registry.add("spring.flyway.password", mariaDBContainer::getPassword);
     }
 
     @BeforeAll
