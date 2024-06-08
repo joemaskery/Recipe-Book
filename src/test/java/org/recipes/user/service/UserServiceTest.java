@@ -78,4 +78,12 @@ class UserServiceTest {
                         INVALID_PASSWORD_MESSAGE, PASSWORDS_DONT_MATCH_MESSAGE));
     }
 
+    @Test
+    void userPasswordMatches_throws_exception_for_unknown_user() {
+        // given, when, then
+        assertThatThrownBy(() -> underTest.userPasswordMatches(1, "a-password"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("User 1 doesn't exist");
+    }
+
 }

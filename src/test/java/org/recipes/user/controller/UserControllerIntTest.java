@@ -2,12 +2,15 @@ package org.recipes.user.controller;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.recipes.IntegrationTest;
 import org.recipes.user.dto.AddUserRequest;
 import org.recipes.user.dto.UpdateUserRequest;
 import org.recipes.user.entity.User;
 import org.recipes.user.repository.UserRepository;
-import org.junit.jupiter.api.Test;
+import org.recipes.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static io.restassured.RestAssured.given;
@@ -15,8 +18,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserControllerIntTest extends IntegrationTest {
 
-    @Autowired
-    UserRepository userRepository;
+    @Autowired UserRepository userRepository;
+    @Autowired UserService userService;
 
     @Test
     void canGetAllUsers() {
@@ -112,6 +115,32 @@ public class UserControllerIntTest extends IntegrationTest {
         assertThat(response.getStatusCode()).isEqualTo(200);
         assertThat(response.getBody().as(User.class)).isEqualTo(updatedUser);
         assertThat(userRepository.findById(1).get()).isEqualTo(updatedUser);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"a-password, true", "a-bad-password, false"})
+    void canCheckUserPassword(String password, Boolean expectedResult) {
+        // given
+        AddUserRequest request = AddUserRequest.builder()
+                .firstName("firstName")
+                .secondName("secondName")
+                .email("test@email.com")
+                .password1("a-password")
+                .password2("a-password")
+                .build();
+        userService.addUser(request);
+
+        // when
+        Response response = given()
+                .body(request)
+                .param("userId", 3)
+                .param("userPassword", password)
+                .contentType(ContentType.JSON)
+            .when()
+                .get("/user/check-password");
+
+        // then
+        assertThat(response.getBody().as(Boolean.class)).isEqualTo(expectedResult);
     }
 
 }

@@ -49,4 +49,10 @@ public class UserController {
         LOG.info("[UserController] Received request to update user {}", request.getUserId());
         return ResponseEntity.ok(this.userService.updateUser(request));
     }
+
+    @GetMapping("/check-password")
+    public ResponseEntity<Boolean> checkUserPassword(@RequestParam Integer userId, @RequestParam String userPassword) {
+        LOG.info("[UserController] Received request to check User {} password", userId);
+        return ResponseEntity.ok(this.userService.userPasswordMatches(userId, userPassword));
+    }
 }

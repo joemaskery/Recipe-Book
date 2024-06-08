@@ -19,12 +19,9 @@ import java.util.List;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class IntegrationTest {
 
-    @LocalServerPort
-    Integer port;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    @LocalServerPort Integer port;
+    @Autowired UserRepository userRepository;
+    @Autowired JdbcTemplate jdbcTemplate;
 
     static MariaDBContainer<?> mariaDBContainer = new MariaDBContainer<>("mariadb:11.2.2");
 

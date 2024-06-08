@@ -126,4 +126,16 @@ public class UserService {
         }
     }
 
+    public boolean userPasswordMatches(Integer userId, String userPassword) {
+        LOG.debug("Checking user password for: userId={}, userPassword={}", userId, userPassword);
+        Optional<User> user = this.userRepository.findById(userId);
+
+        if (user.isEmpty()) {
+            LOG.error("Can't check password for user {} as they don't exist", userId);
+           throw new IllegalStateException("User " + userId + " doesn't exist");
+        }
+
+        return PASSWORD_ENCODER.matches(userPassword, user.get().getPassword());
+    }
+
 }
