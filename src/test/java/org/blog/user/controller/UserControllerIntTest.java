@@ -51,12 +51,8 @@ public class UserControllerIntTest extends IntegrationTest {
                 .firstName("firstName")
                 .secondName("secondName")
                 .email("test@email.com")
-                .build();
-        User user = User.builder()
-                .userId(3)
-                .firstName("firstName")
-                .secondName("secondName")
-                .email("test@email.com")
+                .password1("a-password")
+                .password2("a-password")
                 .build();
 
         // when
@@ -66,10 +62,15 @@ public class UserControllerIntTest extends IntegrationTest {
             .when()
                 .post("/user/add");
 
+        User userResponse = response.getBody().as(User.class);
+
         // then
         assertThat(response.getStatusCode()).isEqualTo(200);
-        assertThat(response.getBody().as(User.class)).isEqualTo(user);
-        assertThat(userRepository.existsById(3)).isTrue();
+        assertThat(userResponse.getUserId()).isEqualTo(3);
+        assertThat(userResponse.getEmail()).isEqualTo("test@email.com");
+        assertThat(userResponse.getFirstName()).isEqualTo("firstName");
+        assertThat(userResponse.getSecondName()).isEqualTo("secondName");
+        assertThat(userResponse.getPassword()).isNotBlank();
     }
 
     @Test

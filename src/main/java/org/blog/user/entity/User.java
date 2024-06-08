@@ -22,6 +22,7 @@ public class User {
     private String secondName;
     @Column(unique = true)
     private String email;
+    private String password;
 
     @Transient
     private List<String> posts;

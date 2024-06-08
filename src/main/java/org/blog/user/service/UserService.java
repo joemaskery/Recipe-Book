@@ -5,11 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
-import org.apache.coyote.BadRequestException;
 import org.blog.user.dto.AddUserRequest;
 import org.blog.user.dto.UpdateUserRequest;
 import org.blog.user.entity.User;
 import org.blog.user.repository.UserRepository;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ import java.util.Optional;
 @Slf4j
 @AllArgsConstructor
 public class UserService {
+
+    private static final PasswordEncoder PASSWORD_ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     private final UserRepository userRepository;
 
@@ -43,7 +46,16 @@ public class UserService {
     public User addUser(AddUserRequest request) {
         this.validateAddUserRequest(request);
         LOG.debug("[UserService] Saving user: {}", request);
-        return this.userRepository.save(this.mapToUser(request));
+        return this.addNewUser(request);
+    }
+
+    private User addNewUser(AddUserRequest request) {
+        return this.userRepository.save(User.builder()
+                .firstName(request.getFirstName())
+                .secondName(request.getSecondName())
+                .email(request.getEmail())
+                .password(PASSWORD_ENCODER.encode(request.getPassword1()))
+                .build());
     }
 
     private void validateAddUserRequest(AddUserRequest request) {
@@ -69,14 +81,6 @@ public class UserService {
             LOG.error("[UserService] addUserRequest failed validation with errors: {}", validationErrors);
             throw new IllegalStateException("Invalid request to add user: " + validationErrors);
         }
-    }
-
-    private User mapToUser(AddUserRequest request) {
-        return User.builder()
-                .firstName(request.getFirstName())
-                .secondName(request.getSecondName())
-                .email(request.getEmail())
-                .build();
     }
 
     public void deleteUser(Integer userId) {
