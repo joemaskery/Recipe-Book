@@ -1,8 +1,8 @@
-package org.blog;
+package org.recipes;
 
 import io.restassured.RestAssured;
-import org.blog.user.entity.User;
-import org.blog.user.repository.UserRepository;
+import org.recipes.user.entity.User;
+import org.recipes.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

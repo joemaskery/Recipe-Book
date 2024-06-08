@@ -1,4 +1,4 @@
-package org.blog.user.entity;
+package org.recipes.user.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

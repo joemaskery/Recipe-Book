@@ -1,4 +1,4 @@
-package org.blog.user.dto;
+package org.recipes.user.dto;
 
 import lombok.Builder;
 import lombok.Data;

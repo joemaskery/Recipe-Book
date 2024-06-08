@@ -1,11 +1,11 @@
-package org.blog.user.controller;
+package org.recipes.user.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.blog.user.dto.AddUserRequest;
-import org.blog.user.dto.UpdateUserRequest;
-import org.blog.user.entity.User;
-import org.blog.user.service.UserService;
+import org.recipes.user.dto.AddUserRequest;
+import org.recipes.user.dto.UpdateUserRequest;
+import org.recipes.user.entity.User;
+import org.recipes.user.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

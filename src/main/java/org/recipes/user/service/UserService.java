@@ -1,14 +1,14 @@
-package org.blog.user.service;
+package org.recipes.user.service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
-import org.blog.user.dto.AddUserRequest;
-import org.blog.user.dto.UpdateUserRequest;
-import org.blog.user.entity.User;
-import org.blog.user.repository.UserRepository;
+import org.recipes.user.dto.AddUserRequest;
+import org.recipes.user.dto.UpdateUserRequest;
+import org.recipes.user.entity.User;
+import org.recipes.user.repository.UserRepository;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

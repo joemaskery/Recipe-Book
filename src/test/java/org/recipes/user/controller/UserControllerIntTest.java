@@ -1,12 +1,12 @@
-package org.blog.user.controller;
+package org.recipes.user.controller;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.blog.IntegrationTest;
-import org.blog.user.dto.AddUserRequest;
-import org.blog.user.dto.UpdateUserRequest;
-import org.blog.user.entity.User;
-import org.blog.user.repository.UserRepository;
+import org.recipes.IntegrationTest;
+import org.recipes.user.dto.AddUserRequest;
+import org.recipes.user.dto.UpdateUserRequest;
+import org.recipes.user.entity.User;
+import org.recipes.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

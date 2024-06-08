@@ -1,8 +1,8 @@
-package org.blog.user.service;
+package org.recipes.user.service;
 
-import org.blog.user.dto.AddUserRequest;
-import org.blog.user.dto.UpdateUserRequest;
-import org.blog.user.repository.UserRepository;
+import org.recipes.user.dto.AddUserRequest;
+import org.recipes.user.dto.UpdateUserRequest;
+import org.recipes.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
