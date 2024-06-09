@@ -18,8 +18,10 @@ public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer recipeId;
+    private Integer userId;
     private String name;
     private String description;
+    @Column(name = "link")
     private String weblink;
 
     @Transient
