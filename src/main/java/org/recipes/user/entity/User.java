@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.recipes.recipe.entity.Recipe;
 
 import java.util.List;
 
@@ -25,8 +26,6 @@ public class User {
     private String password;
 
     @Transient
-    private List<String> posts;
-    @Transient
-    private List<String> comments;
+    private List<Recipe> recipes;
 
 }
