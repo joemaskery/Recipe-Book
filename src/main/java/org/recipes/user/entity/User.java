@@ -25,7 +25,8 @@ public class User {
     private String email;
     private String password;
 
-    @Transient
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
     private List<Recipe> recipes;
 
 }

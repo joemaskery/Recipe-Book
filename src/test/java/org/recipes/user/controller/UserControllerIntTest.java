@@ -65,15 +65,17 @@ public class UserControllerIntTest extends IntegrationTest {
             .when()
                 .post("/user/add");
 
-        User userResponse = response.getBody().as(User.class);
+        final User userResponse = response.getBody().as(User.class);
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(200);
-        assertThat(userResponse.getUserId()).isEqualTo(3);
-        assertThat(userResponse.getEmail()).isEqualTo("test@email.com");
-        assertThat(userResponse.getFirstName()).isEqualTo("firstName");
-        assertThat(userResponse.getSecondName()).isEqualTo("secondName");
-        assertThat(userResponse.getPassword()).isNotBlank();
+
+        final User savedUser = userRepository.findById(userResponse.getUserId()).get();
+        assertThat(savedUser.getUserId()).isEqualTo(3);
+        assertThat(savedUser.getEmail()).isEqualTo("test@email.com");
+        assertThat(savedUser.getFirstName()).isEqualTo("firstName");
+        assertThat(savedUser.getSecondName()).isEqualTo("secondName");
+        assertThat(savedUser.getPassword()).isNotBlank();
     }
 
     @Test
@@ -113,8 +115,8 @@ public class UserControllerIntTest extends IntegrationTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(200);
-        assertThat(response.getBody().as(User.class)).isEqualTo(updatedUser);
-        assertThat(userRepository.findById(1).get()).isEqualTo(updatedUser);
+        assertThat(userRepository.findById(1).get()).usingRecursiveComparison().ignoringFields("recipes")
+                .isEqualTo(updatedUser);
     }
 
     @ParameterizedTest

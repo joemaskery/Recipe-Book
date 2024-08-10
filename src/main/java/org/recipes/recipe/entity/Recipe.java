@@ -24,7 +24,8 @@ public class Recipe {
     @Column(name = "link")
     private String weblink;
 
-    @Transient
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "recipeId")
     private List<Ingredient> ingredients;
 
 }

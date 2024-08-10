@@ -1,11 +1,12 @@
 package org.recipes;
 
 import io.restassured.RestAssured;
-import org.recipes.user.entity.User;
-import org.recipes.user.repository.UserRepository;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.recipes.recipe.repository.RecipeRepository;
+import org.recipes.user.entity.User;
+import org.recipes.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -16,11 +17,15 @@ import org.testcontainers.containers.MariaDBContainer;
 
 import java.util.List;
 
+import static org.recipes.testutils.RecipeTestBuilder.pizza;
+import static org.recipes.testutils.RecipeTestBuilder.tomatoPasta;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class IntegrationTest {
 
     @LocalServerPort Integer port;
     @Autowired UserRepository userRepository;
+    @Autowired RecipeRepository recipeRepository;
     @Autowired JdbcTemplate jdbcTemplate;
 
     static MariaDBContainer<?> mariaDBContainer = new MariaDBContainer<>("mariadb:11.2.2");
@@ -40,16 +45,36 @@ public class IntegrationTest {
         mariaDBContainer.start();
     }
 
-    @AfterAll
-    static void afterAll() {
-        mariaDBContainer.stop();
-    }
-
     @BeforeEach
     void beforeEach() {
         RestAssured.baseURI = "http://localhost:" + port;
-        jdbcTemplate.execute("TRUNCATE TABLE users");
+        saveUserEntities();
+        saveRecipeEntities();
+    }
 
+    @AfterEach
+    void afterEach() {
+        resetTables();
+    }
+
+    private void resetTables() {
+        jdbcTemplate.execute("DELETE FROM ingredients");
+        jdbcTemplate.execute("ALTER TABLE ingredients AUTO_INCREMENT = 1");
+
+        jdbcTemplate.execute("DELETE FROM recipes");
+        jdbcTemplate.execute("ALTER TABLE recipes AUTO_INCREMENT = 1");
+
+        jdbcTemplate.execute("DELETE FROM users");
+        jdbcTemplate.execute("ALTER TABLE users AUTO_INCREMENT = 1");
+    }
+
+    private void saveRecipeEntities() {
+        recipeRepository.saveAll(
+                List.of(tomatoPasta(1).build(), pizza(2).build())
+        );
+    }
+
+    private void saveUserEntities() {
         User user1 = User.builder()
                 .firstName("name1")
                 .secondName("surname1")

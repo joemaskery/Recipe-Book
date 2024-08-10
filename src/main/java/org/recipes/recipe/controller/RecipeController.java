@@ -2,7 +2,6 @@ package org.recipes.recipe.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.recipes.recipe.dto.AddRecipeRequest;
 import org.recipes.recipe.entity.Recipe;
 import org.recipes.recipe.service.RecipeService;
