@@ -5,22 +5,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.recipes.recipe.model.QuantityType;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "ingredients")
-public class Ingredient {
+@Builder
+@Entity(name = "ingredients_reference")
+public class IngredientEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer ingredientId;
-    private Integer recipeId;
+    @Column(name = "ingredient_ref_id")
+    private Integer referenceId;
     private String name;
-    private Double quantity;
-    @Enumerated(EnumType.STRING)
-    private QuantityType quantityType;
+    private String category;
+    private Integer userId;
+    private boolean allUsers;
 
 }

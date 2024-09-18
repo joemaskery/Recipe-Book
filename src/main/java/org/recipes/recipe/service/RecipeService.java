@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.recipes.recipe.dto.AddRecipeRequest;
 import org.recipes.recipe.dto.IngredientInput;
-import org.recipes.recipe.entity.Ingredient;
-import org.recipes.recipe.entity.Recipe;
+import org.recipes.recipe.entity.RecipeIngredientEntity;
+import org.recipes.recipe.entity.RecipeEntity;
 import org.recipes.recipe.repository.RecipeRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,30 +18,28 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
 
-    public List<Recipe> getByUserId(final Integer userId) {
-        List<Recipe> userRecipes = this.recipeRepository.findAllByUserId(userId);
+    public List<RecipeEntity> getByUserId(final Integer userId) {
+        List<RecipeEntity> userRecipes = this.recipeRepository.findAllByUserId(userId);
         LOG.debug("[RecipeService] Found {} recipes for User {}", userRecipes.size(), userId);
         return userRecipes;
     }
 
-    public Recipe addRecipe(final AddRecipeRequest request) {
+    public RecipeEntity addRecipe(final AddRecipeRequest request) {
         LOG.debug("[RecipeService] Saving recipe: {}", request);
-        final var result = this.recipeRepository.save(toRecipe(request));
-        final var result2 = this.recipeRepository.findById(result.getRecipeId()).get();
-        return result;
+        return this.recipeRepository.save(toRecipe(request));
     }
 
-    private Recipe toRecipe(final AddRecipeRequest request) {
-        return Recipe.builder()
+    private RecipeEntity toRecipe(final AddRecipeRequest request) {
+        return RecipeEntity.builder()
                 .userId(request.getUserId())
                 .name(request.getName())
                 .description(request.getDescription())
                 .weblink(request.getWeblink())
-                .ingredients(toIngredients(request.getIngredients()))
+                .recipeIngredients(toIngredients(request.getIngredients()))
                 .build();
     }
 
-    private List<Ingredient> toIngredients(final List<IngredientInput> inputs) {
+    private List<RecipeIngredientEntity> toIngredients(final List<IngredientInput> inputs) {
         if (inputs == null) {
             return List.of();
         }
@@ -51,13 +49,12 @@ public class RecipeService {
                 .toList();
     }
 
-    private Ingredient toIngredient(final IngredientInput input) {
-        return Ingredient.builder()
-                .name(input.getName())
+    private RecipeIngredientEntity toIngredient(final IngredientInput input) {
+        return RecipeIngredientEntity.builder()
                 .quantity(input.getQuantity())
                 .quantityType(input.getQuantityType())
+                .ingredientRefId(input.getIngredientRefId())
                 .build();
     }
-
 
 }

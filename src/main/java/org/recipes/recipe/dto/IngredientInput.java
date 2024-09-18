@@ -8,7 +8,7 @@ import org.recipes.recipe.model.QuantityType;
 @Builder
 public class IngredientInput {
 
-    private String name;
+    private Integer ingredientRefId;
     private Double quantity;
     private QuantityType quantityType;
 

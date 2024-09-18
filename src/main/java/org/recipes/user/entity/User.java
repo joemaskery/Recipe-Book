@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.recipes.recipe.entity.Recipe;
+import org.recipes.recipe.entity.RecipeEntity;
 
 import java.util.List;
 
@@ -27,6 +27,6 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
-    private List<Recipe> recipes;
+    private List<RecipeEntity> recipes;
 
 }
