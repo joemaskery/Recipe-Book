@@ -1,44 +1,47 @@
 package org.recipes.testutils;
 
-import org.recipes.recipe.entity.Ingredient;
-import org.recipes.recipe.entity.Ingredient.IngredientBuilder;
-import org.recipes.recipe.model.QuantityType;
+import org.recipes.recipe.entity.IngredientEntity;
 
 public class IngredientTestBuilder {
 
-    public static IngredientBuilder tomato(final Double quantity) {
-        return Ingredient.builder()
+    public static IngredientEntity tomatoReference() {
+        return IngredientEntity.builder()
                 .name("Tomato")
-                .quantity(quantity)
-                .quantityType(QuantityType.ITEMS);
+                .category("Fruit")
+                .allUsers(true)
+                .build();
     }
 
-    public static IngredientBuilder pasta(final Double quantity) {
-        return Ingredient.builder()
+    public static IngredientEntity pastaReference() {
+        return IngredientEntity.builder()
                 .name("Fusilli Pasta")
-                .quantity(quantity)
-                .quantityType(QuantityType.GRAM);
+                .category("Baking & Grains")
+                .allUsers(true)
+                .build();
     }
 
-    public static IngredientBuilder cheese(final Double quantity) {
-        return Ingredient.builder()
+    public static IngredientEntity cheddarCheeseReference() {
+        return IngredientEntity.builder()
                 .name("Cheddar Cheese")
-                .quantity(quantity)
-                .quantityType(QuantityType.GRAM);
+                .category("Dairy")
+                .allUsers(true)
+                .build();
     }
 
-    public static IngredientBuilder garlicBread(final Double quantity) {
-        return Ingredient.builder()
+    public static IngredientEntity garlicBreadReference() {
+        return IngredientEntity.builder()
                 .name("Garlic Bread")
-                .quantity(quantity)
-                .quantityType(QuantityType.ITEMS);
+                .category("Baking & Grains")
+                .allUsers(true)
+                .build();
     }
 
-    public static IngredientBuilder pizzaDough(final Double quantity) {
-        return Ingredient.builder()
-                .name("Pizza Dough")
-                .quantity(quantity)
-                .quantityType(QuantityType.GRAM);
+    public static IngredientEntity pizzaDoughReference() {
+        return IngredientEntity.builder()
+                .name("Pizza Reference")
+                .category("Baking & Grains")
+                .allUsers(true)
+                .build();
     }
 
 }

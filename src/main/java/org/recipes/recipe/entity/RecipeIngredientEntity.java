@@ -27,4 +27,12 @@ public class RecipeIngredientEntity {
     @JoinColumn(name = "ingredientRefId", referencedColumnName = "ingredient_ref_id", insertable = false, updatable = false)
     private IngredientEntity ingredientReference;
 
+    public String getName() {
+        return ingredientReference != null ? ingredientReference.getName() : null;
+    }
+
+    public String getCategory() {
+        return ingredientReference != null ? ingredientReference.getCategory() : null;
+    }
+
 }

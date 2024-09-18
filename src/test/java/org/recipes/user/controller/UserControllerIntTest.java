@@ -37,9 +37,7 @@ public class UserControllerIntTest extends IntegrationTest {
     @Test
     void canGetUserById() {
         // when
-        Response response = given()
-                .get("/user/get/2");
-
+        Response response = given().get("/user/get/2");
         // then
         assertThat(response.getStatusCode()).isEqualTo(200);
         assertThat(response.getBody().as(User.class))

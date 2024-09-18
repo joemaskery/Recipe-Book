@@ -16,15 +16,15 @@ public class AddRecipeRequestTestBuilder {
                 .description("recipe-description")
                 .weblink("www.recipe-book.com")
                 .ingredients(List.of(
-                        ingredientInput("ingredient-1", 100.00, QuantityType.GRAM),
-                        ingredientInput("ingredient-2", 200.00, QuantityType.LITRES),
-                        ingredientInput("ingredient-3", 300.00, QuantityType.MILLILITRES)
+                        ingredientInput(1, 100.00, QuantityType.GRAM),
+                        ingredientInput(2, 200.00, QuantityType.LITRES),
+                        ingredientInput(3, 300.00, QuantityType.MILLILITRES)
                 ));
     }
 
-    public static IngredientInput ingredientInput(final String name, final Double quantity, final QuantityType type) {
+    public static IngredientInput ingredientInput(final Integer refId, final Double quantity, final QuantityType type) {
         return IngredientInput.builder()
-                .name(name)
+                .ingredientRefId(refId)
                 .quantity(quantity)
                 .quantityType(type)
                 .build();
