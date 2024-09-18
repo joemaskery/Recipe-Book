@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.recipes.recipe.dto.AddRecipeRequest;
 import org.recipes.recipe.dto.UserRecipe;
-import org.recipes.recipe.entity.RecipeEntity;
 import org.recipes.recipe.service.RecipeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
