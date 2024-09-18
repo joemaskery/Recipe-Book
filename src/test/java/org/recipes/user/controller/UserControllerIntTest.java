@@ -8,7 +8,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.recipes.IntegrationTest;
 import org.recipes.user.dto.AddUserRequest;
 import org.recipes.user.dto.UpdateUserRequest;
-import org.recipes.user.entity.User;
+import org.recipes.user.dto.User;
+import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.UserRepository;
 import org.recipes.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +69,7 @@ public class UserControllerIntTest extends IntegrationTest {
         // then
         assertThat(response.getStatusCode()).isEqualTo(200);
 
-        final User savedUser = userRepository.findById(userResponse.getUserId()).get();
+        final UserEntity savedUser = userRepository.findById(userResponse.getUserId()).get();
         assertThat(savedUser.getUserId()).isEqualTo(3);
         assertThat(savedUser.getEmail()).isEqualTo("test@email.com");
         assertThat(savedUser.getFirstName()).isEqualTo("firstName");
@@ -97,7 +98,7 @@ public class UserControllerIntTest extends IntegrationTest {
                 .secondName("newSecondName")
                 .email("newemail@domain.com")
                 .build();
-        User updatedUser = User.builder()
+        UserEntity updatedUser = UserEntity.builder()
                 .userId(1)
                 .firstName("newFirstName")
                 .secondName("newSecondName")

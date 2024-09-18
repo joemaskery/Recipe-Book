@@ -7,7 +7,7 @@ import org.recipes.recipe.entity.IngredientEntity;
 import org.recipes.recipe.repository.IngredientReferenceRepository;
 import org.recipes.recipe.repository.RecipeIngredientRepository;
 import org.recipes.recipe.repository.RecipeRepository;
-import org.recipes.user.entity.User;
+import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -74,12 +74,12 @@ public class IntegrationTest {
     }
 
     private void saveUsers() {
-        User user1 = User.builder()
+        UserEntity user1 = UserEntity.builder()
                 .firstName("name1")
                 .secondName("surname1")
                 .email("email1@domain.com")
                 .build();
-        User user2 = User.builder()
+        UserEntity user2 = UserEntity.builder()
                 .firstName("name2")
                 .secondName("surname2")
                 .email("email2@domain.com")
