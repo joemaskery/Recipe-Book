@@ -1,4 +1,4 @@
-package org.recipes.recipe.dto;
+package org.recipes.recipe.dto.request;
 
 import lombok.Builder;
 import lombok.Data;

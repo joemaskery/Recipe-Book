@@ -2,10 +2,10 @@ package org.recipes.recipe.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.recipes.recipe.dto.AddRecipeRequest;
-import org.recipes.recipe.dto.IngredientInput;
-import org.recipes.recipe.dto.RecipeIngredient;
-import org.recipes.recipe.dto.UserRecipe;
+import org.recipes.recipe.dto.request.AddRecipeRequest;
+import org.recipes.recipe.dto.request.IngredientInput;
+import org.recipes.recipe.dto.response.RecipeIngredient;
+import org.recipes.recipe.dto.response.UserRecipe;
 import org.recipes.recipe.entity.RecipeIngredientEntity;
 import org.recipes.recipe.entity.RecipeEntity;
 import org.recipes.recipe.repository.RecipeRepository;

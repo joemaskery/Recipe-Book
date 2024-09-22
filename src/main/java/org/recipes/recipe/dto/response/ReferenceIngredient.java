@@ -1,4 +1,4 @@
-package org.recipes.recipe.dto;
+package org.recipes.recipe.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AddIngredientRequest {
+public class ReferenceIngredient {
 
     private String name;
     private String category;
-    private Integer userId;
+    private boolean allUsers;
 
 }

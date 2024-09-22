@@ -2,10 +2,13 @@ package org.recipes.recipe.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.recipes.recipe.dto.AddIngredientRequest;
+import org.recipes.recipe.dto.request.AddIngredientRequest;
+import org.recipes.recipe.dto.response.ReferenceIngredient;
 import org.recipes.recipe.entity.IngredientEntity;
 import org.recipes.recipe.repository.IngredientReferenceRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -14,12 +17,35 @@ public class IngredientReferenceService {
 
     private final IngredientReferenceRepository ingredientRepository;
 
-    public IngredientEntity addIngredient(final AddIngredientRequest request) {
+    public ReferenceIngredient addIngredient(final AddIngredientRequest request) {
         LOG.debug("[IngredientReferenceService] Saving ingredient: {}", request);
-        return ingredientRepository.save(toIngredient(request));
+        final IngredientEntity savedIngredient = ingredientRepository.save(toIngredientEntity(request));
+        LOG.debug("[IngredientReferenceService] Saved ingredient with ID {}", savedIngredient.getReferenceId());
+        return toReferenceIngredient(savedIngredient);
     }
 
-    public IngredientEntity toIngredient(final AddIngredientRequest request) {
+    public List<ReferenceIngredient> getAllForUser(final Integer userId) {
+        final List<IngredientEntity> ingredientEntities = ingredientRepository
+                .findAllByUserIdEqualsOrAllUsersIsTrue(userId);
+        LOG.debug("Found {} ingredients for user {}", ingredientEntities.size(), userId);
+        return toReferenceIngredients(ingredientEntities);
+    }
+
+    private ReferenceIngredient toReferenceIngredient(final IngredientEntity entity) {
+        return ReferenceIngredient.builder()
+                .name(entity.getName())
+                .category(entity.getCategory())
+                .allUsers(entity.isAllUsers())
+                .build();
+    }
+
+    private List<ReferenceIngredient> toReferenceIngredients(final List<IngredientEntity> ingredientEntities) {
+        return ingredientEntities.stream()
+                .map(this::toReferenceIngredient)
+                .toList();
+    }
+
+    private IngredientEntity toIngredientEntity(final AddIngredientRequest request) {
         return IngredientEntity.builder()
                 .name(request.getName())
                 .category(request.getCategory())
