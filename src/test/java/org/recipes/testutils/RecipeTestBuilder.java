@@ -1,7 +1,7 @@
 package org.recipes.testutils;
 
-import org.recipes.recipe.dto.UserRecipe;
-import org.recipes.recipe.dto.UserRecipe.UserRecipeBuilder;
+import org.recipes.recipe.dto.response.UserRecipe;
+import org.recipes.recipe.dto.response.UserRecipe.UserRecipeBuilder;
 import org.recipes.recipe.entity.RecipeEntity;
 import org.recipes.recipe.entity.RecipeEntity.RecipeEntityBuilder;
 

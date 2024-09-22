@@ -1,8 +1,8 @@
 package org.recipes.testutils;
 
-import org.recipes.recipe.dto.AddRecipeRequest;
-import org.recipes.recipe.dto.AddRecipeRequest.AddRecipeRequestBuilder;
-import org.recipes.recipe.dto.IngredientInput;
+import org.recipes.recipe.dto.request.AddRecipeRequest;
+import org.recipes.recipe.dto.request.AddRecipeRequest.AddRecipeRequestBuilder;
+import org.recipes.recipe.dto.request.IngredientInput;
 import org.recipes.recipe.model.QuantityType;
 
 import java.util.List;

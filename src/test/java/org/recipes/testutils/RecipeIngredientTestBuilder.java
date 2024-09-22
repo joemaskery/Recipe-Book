@@ -1,7 +1,7 @@
 package org.recipes.testutils;
 
-import org.recipes.recipe.dto.RecipeIngredient;
-import org.recipes.recipe.dto.RecipeIngredient.RecipeIngredientBuilder;
+import org.recipes.recipe.dto.response.RecipeIngredient;
+import org.recipes.recipe.dto.response.RecipeIngredient.RecipeIngredientBuilder;
 import org.recipes.recipe.entity.RecipeIngredientEntity;
 import org.recipes.recipe.model.QuantityType;
 

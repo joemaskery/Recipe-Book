@@ -38,7 +38,7 @@ public class IngredientTestBuilder {
 
     public static IngredientEntity pizzaDoughReference() {
         return IngredientEntity.builder()
-                .name("Pizza Reference")
+                .name("Pizza Dough")
                 .category("Baking & Grains")
                 .allUsers(true)
                 .build();

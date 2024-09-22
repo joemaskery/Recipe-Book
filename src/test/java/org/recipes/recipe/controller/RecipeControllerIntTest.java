@@ -5,13 +5,15 @@ import io.restassured.response.Response;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Test;
 import org.recipes.IntegrationTest;
-import org.recipes.recipe.dto.AddRecipeRequest;
-import org.recipes.recipe.dto.UserRecipe;
-import org.recipes.recipe.entity.RecipeIngredientEntity;
+import org.recipes.recipe.dto.request.AddRecipeRequest;
+import org.recipes.recipe.dto.response.UserRecipe;
 import org.recipes.recipe.entity.RecipeEntity;
+import org.recipes.recipe.entity.RecipeIngredientEntity;
 import org.recipes.recipe.model.QuantityType;
 import org.recipes.recipe.repository.RecipeIngredientRepository;
 import org.recipes.recipe.repository.RecipeRepository;
+import org.recipes.testutils.IngredientHelper;
+import org.recipes.testutils.RecipeHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -29,10 +31,15 @@ class RecipeControllerIntTest extends IntegrationTest {
 
     @Autowired RecipeRepository recipeRepository;
     @Autowired RecipeIngredientRepository recipeIngredientRepository;
+    @Autowired RecipeHelper recipeHelper;
+    @Autowired IngredientHelper ingredientHelper;
 
     @Test
     void getUserRecipes_returns_all_user_recipes() {
-        // given, when
+        // given
+        recipeHelper.saveRecipes();
+
+        // when
         Response response = given().get("/recipe/get-for-user/1");
         final UserRecipe[] recipes = response.getBody().as(UserRecipe[].class);
 
@@ -55,6 +62,7 @@ class RecipeControllerIntTest extends IntegrationTest {
     @Test
     void addRecipe_adds_recipe() {
         // given
+        ingredientHelper.saveIngredients();
         final AddRecipeRequest request = addRecipeRequest(USER_ID_1).build();
         // when
         final Response response = given()

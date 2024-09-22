@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.recipes.IntegrationTest;
+import org.recipes.testutils.UserHelper;
 import org.recipes.user.dto.AddUserRequest;
 import org.recipes.user.dto.UpdateUserRequest;
 import org.recipes.user.dto.User;
@@ -21,9 +22,13 @@ public class UserControllerIntTest extends IntegrationTest {
 
     @Autowired UserRepository userRepository;
     @Autowired UserService userService;
+    @Autowired UserHelper userHelper;
 
     @Test
     void canGetAllUsers() {
+        // given
+        userHelper.saveUsers();
+
         // when
         Response response = given()
                 .get("/user/get-all");
@@ -37,6 +42,8 @@ public class UserControllerIntTest extends IntegrationTest {
 
     @Test
     void canGetUserById() {
+        // given
+        userHelper.saveUsers();
         // when
         Response response = given().get("/user/get/2");
         // then
@@ -70,7 +77,6 @@ public class UserControllerIntTest extends IntegrationTest {
         assertThat(response.getStatusCode()).isEqualTo(200);
 
         final UserEntity savedUser = userRepository.findById(userResponse.getUserId()).get();
-        assertThat(savedUser.getUserId()).isEqualTo(3);
         assertThat(savedUser.getEmail()).isEqualTo("test@email.com");
         assertThat(savedUser.getFirstName()).isEqualTo("firstName");
         assertThat(savedUser.getSecondName()).isEqualTo("secondName");
@@ -79,6 +85,8 @@ public class UserControllerIntTest extends IntegrationTest {
 
     @Test
     void canDeleteUser() {
+        // given
+        userHelper.saveUsers();
         // when
         Response response = given()
                 .delete("/user/delete/2");
@@ -92,6 +100,8 @@ public class UserControllerIntTest extends IntegrationTest {
     @Test
     void canUpdateUser() {
         // given
+        userHelper.saveUsers();
+
         UpdateUserRequest request = UpdateUserRequest.builder()
                 .userId(1)
                 .firstName("newFirstName")
@@ -134,7 +144,7 @@ public class UserControllerIntTest extends IntegrationTest {
         // when
         Response response = given()
                 .body(request)
-                .param("userId", 3)
+                .param("userId", 1)
                 .param("userPassword", password)
                 .contentType(ContentType.JSON)
             .when()
