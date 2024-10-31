@@ -15,6 +15,7 @@ import java.util.List;
 @RequestMapping("/user")
 @AllArgsConstructor
 @Slf4j
+@CrossOrigin
 public class UserController {
 
     private final UserService userService;

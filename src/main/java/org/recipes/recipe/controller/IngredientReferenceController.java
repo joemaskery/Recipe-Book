@@ -15,6 +15,7 @@ import java.util.List;
 @RequestMapping("/ingredient")
 @AllArgsConstructor
 @Slf4j
+@CrossOrigin
 public class IngredientReferenceController {
 
     private final IngredientReferenceService ingredientReferenceService;
