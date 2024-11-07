@@ -1,12 +1,14 @@
 package org.recipes;
 
 import io.restassured.RestAssured;
+import io.restassured.parsing.Parser;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MariaDBContainer;
@@ -37,6 +39,7 @@ public class IntegrationTest {
     @BeforeEach
     void beforeEach() {
         RestAssured.baseURI = "http://localhost:" + port;
+        RestAssured.defaultParser = Parser.JSON;
         resetTables();
     }
 

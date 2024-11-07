@@ -10,7 +10,6 @@ import org.recipes.user.dto.UpdateUserRequest;
 import org.recipes.user.dto.User;
 import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.UserRepository;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +23,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserService {
 
-    private static final PasswordEncoder PASSWORD_ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
     public User getUser(final Integer userId) {
@@ -79,17 +77,6 @@ public class UserService {
         }
     }
 
-    public boolean userPasswordMatches(Integer userId, String userPassword) {
-        LOG.debug("Checking user password for: userId={}, userPassword={}", userId, userPassword);
-        Optional<UserEntity> user = this.userRepository.findById(userId);
-
-        if (user.isEmpty()) {
-            LOG.error("Can't check password for user {} as they don't exist", userId);
-           throw new IllegalStateException("User " + userId + " doesn't exist");
-        }
-
-        return PASSWORD_ENCODER.matches(userPassword, user.get().getPassword());
-    }
 
     private User mapToUser(final UserEntity userEntity) {
         return User.builder()
@@ -122,7 +109,7 @@ public class UserService {
                 .firstName(request.getFirstName())
                 .secondName(request.getSecondName())
                 .email(request.getEmail())
-                .password(PASSWORD_ENCODER.encode(request.getPassword1()))
+                .password(passwordEncoder.encode(request.getPassword1()))
                 .build());
     }
 

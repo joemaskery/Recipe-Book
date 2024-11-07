@@ -10,11 +10,14 @@ import org.recipes.recipe.entity.IngredientEntity;
 import org.recipes.recipe.repository.IngredientReferenceRepository;
 import org.recipes.testutils.UserHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
+
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 class IngredientReferenceControllerIntTest extends IntegrationTest {
 
     @Autowired IngredientReferenceRepository ingredientRepository;

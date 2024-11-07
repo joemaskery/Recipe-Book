@@ -15,6 +15,7 @@ import org.recipes.recipe.repository.RecipeRepository;
 import org.recipes.testutils.IngredientHelper;
 import org.recipes.testutils.RecipeHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ import static org.recipes.testutils.AddRecipeRequestTestBuilder.addRecipeRequest
 import static org.recipes.testutils.RecipeIngredientTestBuilder.*;
 import static org.recipes.testutils.RecipeTestBuilder.tomatoPastaRecipe;
 
+@ActiveProfiles("test")
 class RecipeControllerIntTest extends IntegrationTest {
 
     private static final Integer USER_ID_1 = 1;
