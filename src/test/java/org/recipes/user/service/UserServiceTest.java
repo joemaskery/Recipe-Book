@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.recipes.user.dto.AddUserRequest;
 import org.recipes.user.dto.UpdateUserRequest;
+import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.UserRepository;
 
 import java.util.Optional;
@@ -20,6 +21,7 @@ class UserServiceTest {
     private static final String INVALID_FIRST_NAME_MESSAGE = "First Name must not be blank";
     private static final String INVALID_SECOND_NAME_MESSAGE = "Second Name must not be blank";
     private static final String INVALID_EMAIL_MESSAGE = "Invalid email address";
+    private static final String EMAIL_ALREADY_IN_USE_MESSAGE = "Email address already in use";
     private static final String INVALID_PASSWORD_MESSAGE = "Password must not be blank";
     private static final String PASSWORDS_DONT_MATCH_MESSAGE = "Passwords do not match";
 
@@ -74,8 +76,27 @@ class UserServiceTest {
         assertThatThrownBy(() -> underTest.addUser(addUserRequest))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(String.format("Invalid request to add user: [%s, %s, %s, %s, %s]",
-                        INVALID_FIRST_NAME_MESSAGE, INVALID_SECOND_NAME_MESSAGE, INVALID_EMAIL_MESSAGE,
+                        INVALID_EMAIL_MESSAGE, INVALID_FIRST_NAME_MESSAGE, INVALID_SECOND_NAME_MESSAGE,
                         INVALID_PASSWORD_MESSAGE, PASSWORDS_DONT_MATCH_MESSAGE));
+    }
+
+    @Test
+    void addUser_throws_exception_if_email_already_in_use() {
+        // given
+        final var addUserRequest = AddUserRequest.builder()
+                .firstName("firstName")
+                .secondName("secondName")
+                .email("email@domain.com")
+                .password1("password")
+                .password2("password")
+                .build();
+
+        when(userRepository.findUserByEmail("email@domain.com")).thenReturn(Optional.of(new UserEntity()));
+
+        // when, then
+        assertThatThrownBy(() -> underTest.addUser(addUserRequest))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(String.format("Invalid request to add user: [%s]", EMAIL_ALREADY_IN_USE_MESSAGE));
     }
 
 }

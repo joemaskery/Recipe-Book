@@ -116,14 +116,17 @@ public class UserService {
     private void validateAddUserRequest(AddUserRequest request) {
         LOG.debug("[UserService] Validating addUserRequest: {}", request);
         List<String> validationErrors = new ArrayList<>();
+
+        if (!EmailValidator.getInstance().isValid(request.getEmail())) {
+            validationErrors.add("Invalid email address");
+        } else if (emailAlreadyInUse(request.getEmail())){
+            validationErrors.add("Email address already in use");
+        }
         if (StringUtils.isBlank(request.getFirstName())) {
             validationErrors.add("First Name must not be blank");
         }
         if (StringUtils.isBlank(request.getSecondName())) {
             validationErrors.add("Second Name must not be blank");
-        }
-        if (!EmailValidator.getInstance().isValid(request.getEmail())) {
-            validationErrors.add("Invalid email address");
         }
         if (StringUtils.isBlank(request.getPassword1())) {
             validationErrors.add("Password must not be blank");
@@ -136,6 +139,10 @@ public class UserService {
             LOG.error("[UserService] addUserRequest failed validation with errors: {}", validationErrors);
             throw new IllegalStateException("Invalid request to add user: " + validationErrors);
         }
+    }
+
+    private boolean emailAlreadyInUse(final String email) {
+        return userRepository.findUserByEmail(email).isPresent();
     }
 
 }

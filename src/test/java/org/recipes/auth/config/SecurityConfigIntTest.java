@@ -45,8 +45,6 @@ public class SecurityConfigIntTest extends IntegrationTest {
         assertThat(response.getStatusCode()).isEqualTo(200);
     }
 
-
-
     private User givenUserExists(final String email, final String password) {
         return userService.addUser(
                 AddUserRequest.builder()
