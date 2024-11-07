@@ -1,4 +1,4 @@
-package org.recipes.user.dto;
+package org.recipes.auth.dto;
 
 import lombok.Builder;
 import lombok.Data;

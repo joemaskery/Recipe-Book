@@ -3,7 +3,7 @@ package org.recipes.auth.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.recipes.auth.security.JwtHelper;
-import org.recipes.user.dto.LoginResponse;
+import org.recipes.auth.dto.LoginResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;

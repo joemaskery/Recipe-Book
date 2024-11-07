@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.recipes.IntegrationTest;
 import org.recipes.auth.service.AuthService;
 import org.recipes.user.dto.AddUserRequest;
-import org.recipes.user.dto.LoginResponse;
+import org.recipes.auth.dto.LoginResponse;
 import org.recipes.user.dto.User;
 import org.recipes.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
