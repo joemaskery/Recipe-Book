@@ -1,6 +1,7 @@
 package org.recipes;
 
 import io.restassured.RestAssured;
+import io.restassured.parsing.Parser;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ public class IntegrationTest {
     @BeforeEach
     void beforeEach() {
         RestAssured.baseURI = "http://localhost:" + port;
+        RestAssured.defaultParser = Parser.JSON;
         resetTables();
     }
 

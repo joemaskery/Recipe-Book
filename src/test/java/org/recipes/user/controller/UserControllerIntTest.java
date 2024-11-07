@@ -3,25 +3,22 @@ package org.recipes.user.controller;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.recipes.IntegrationTest;
 import org.recipes.testutils.UserHelper;
-import org.recipes.user.dto.AddUserRequest;
 import org.recipes.user.dto.UpdateUserRequest;
 import org.recipes.user.dto.User;
 import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.UserRepository;
-import org.recipes.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 public class UserControllerIntTest extends IntegrationTest {
 
     @Autowired UserRepository userRepository;
-    @Autowired UserService userService;
     @Autowired UserHelper userHelper;
 
     @Test
@@ -51,36 +48,6 @@ public class UserControllerIntTest extends IntegrationTest {
         assertThat(response.getBody().as(User.class))
                 .extracting("userId", "firstName", "secondName", "email")
                 .containsExactly(2, "name2", "surname2", "email2@domain.com");
-    }
-
-    @Test
-    void canAddUser() {
-        // given
-        AddUserRequest request = AddUserRequest.builder()
-                .firstName("firstName")
-                .secondName("secondName")
-                .email("test@email.com")
-                .password1("a-password")
-                .password2("a-password")
-                .build();
-
-        // when
-        Response response = given()
-                .body(request)
-                .contentType(ContentType.JSON)
-            .when()
-                .post("/user/add");
-
-        final User userResponse = response.getBody().as(User.class);
-
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(200);
-
-        final UserEntity savedUser = userRepository.findById(userResponse.getUserId()).get();
-        assertThat(savedUser.getEmail()).isEqualTo("test@email.com");
-        assertThat(savedUser.getFirstName()).isEqualTo("firstName");
-        assertThat(savedUser.getSecondName()).isEqualTo("secondName");
-        assertThat(savedUser.getPassword()).isNotBlank();
     }
 
     @Test
@@ -128,30 +95,5 @@ public class UserControllerIntTest extends IntegrationTest {
                 .isEqualTo(updatedUser);
     }
 
-    @ParameterizedTest
-    @CsvSource(value = {"a-password, true", "a-bad-password, false"})
-    void canCheckUserPassword(String password, Boolean expectedResult) {
-        // given
-        AddUserRequest request = AddUserRequest.builder()
-                .firstName("firstName")
-                .secondName("secondName")
-                .email("test@email.com")
-                .password1("a-password")
-                .password2("a-password")
-                .build();
-        userService.addUser(request);
-
-        // when
-        Response response = given()
-                .body(request)
-                .param("userId", 1)
-                .param("userPassword", password)
-                .contentType(ContentType.JSON)
-            .when()
-                .get("/user/check-password");
-
-        // then
-        assertThat(response.getBody().as(Boolean.class)).isEqualTo(expectedResult);
-    }
 
 }

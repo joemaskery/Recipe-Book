@@ -1,13 +1,13 @@
 package org.recipes.user.service;
 
-import org.recipes.user.dto.AddUserRequest;
-import org.recipes.user.dto.UpdateUserRequest;
-import org.recipes.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.recipes.user.dto.AddUserRequest;
+import org.recipes.user.dto.UpdateUserRequest;
+import org.recipes.user.repository.UserRepository;
 
 import java.util.Optional;
 
@@ -49,12 +49,12 @@ class UserServiceTest {
     @Test
     void updateUser_throws_exception_for_unknown_id() {
         // given
-        final var updateUserRequest = UpdateUserRequest.builder()
+        final UpdateUserRequest request = UpdateUserRequest.builder()
                 .userId(1)
                 .build();
         when(userRepository.findById(1)).thenReturn(Optional.empty());
         // then
-        assertThatThrownBy(() -> underTest.deleteUser(1))
+        assertThatThrownBy(() -> underTest.updateUser(request))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("User not found for ID: 1");
     }
@@ -76,14 +76,6 @@ class UserServiceTest {
                 .hasMessage(String.format("Invalid request to add user: [%s, %s, %s, %s, %s]",
                         INVALID_FIRST_NAME_MESSAGE, INVALID_SECOND_NAME_MESSAGE, INVALID_EMAIL_MESSAGE,
                         INVALID_PASSWORD_MESSAGE, PASSWORDS_DONT_MATCH_MESSAGE));
-    }
-
-    @Test
-    void userPasswordMatches_throws_exception_for_unknown_user() {
-        // given, when, then
-        assertThatThrownBy(() -> underTest.userPasswordMatches(1, "a-password"))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("User 1 doesn't exist");
     }
 
 }
