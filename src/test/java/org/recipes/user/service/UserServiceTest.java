@@ -1,14 +1,13 @@
 package org.recipes.user.service;
 
-import org.recipes.user.dto.AddUserRequest;
-import org.recipes.user.dto.UpdateUserRequest;
-import org.recipes.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.recipes.user.dto.AddUserRequest;
+import org.recipes.user.dto.UpdateUserRequest;
+import org.recipes.user.repository.UserRepository;
 
 import java.util.Optional;
 
