@@ -1,0 +1,53 @@
+package org.recipes.recipe.service;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.recipes.recipe.dto.request.ShoppingListRequest;
+import org.recipes.recipe.dto.response.ShoppingList;
+import org.recipes.recipe.dto.response.ShoppingListItem;
+import org.recipes.recipe.model.QuantityType;
+import org.recipes.recipe.repository.dao.IngredientSummary;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@Service
+@Slf4j
+@AllArgsConstructor
+public class ShoppingListService {
+
+    private final RecipeIngredientService recipeIngredientService;
+
+    public ShoppingList buildShoppingList(final ShoppingListRequest request) {
+        final List<IngredientSummary> ingredients =
+                recipeIngredientService.getIngredientsForRecipeIds(request.getRecipeIds());
+
+        final Map<Integer, List<IngredientSummary>> ingredientsByReferenceId = ingredients.stream()
+                .collect(Collectors.groupingBy(IngredientSummary::getIngredientRefId));
+
+        final List<ShoppingListItem> items = new ArrayList<>();
+
+        ingredientsByReferenceId.forEach((refId, ingredientsForRefId) -> {
+
+            Map<QuantityType, List<IngredientSummary>> ingredientByQuantityType = ingredientsForRefId.stream()
+                    .collect(Collectors.groupingBy(IngredientSummary::getQuantityType));
+
+            ingredientByQuantityType.forEach((quantityType, ingredientsForQuantityType) -> {
+                final Double totalQuantity = ingredientsForQuantityType.stream()
+                        .map(IngredientSummary::getQuantity)
+                        .mapToDouble(i -> i)
+                        .sum();
+
+                items.add(new ShoppingListItem(ingredientsForQuantityType.getFirst().getIngredientReferenceName(),
+                        totalQuantity, quantityType));
+            });
+
+        });
+
+        return new ShoppingList(items);
+    }
+
+}
