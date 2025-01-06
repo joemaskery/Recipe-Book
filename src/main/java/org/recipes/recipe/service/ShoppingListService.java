@@ -33,17 +33,21 @@ public class ShoppingListService {
                     .build();
         }
 
+        LOG.debug("Retrieved {} ingredient summaries", ingredients.size());
+
         final Map<Integer, List<IngredientSummary>> ingredientsByReferenceId = ingredients.stream()
                 .collect(Collectors.groupingBy(IngredientSummary::getIngredientRefId));
 
         final List<ShoppingListItem> items = new ArrayList<>();
 
         ingredientsByReferenceId.forEach((refId, ingredientsForRefId) -> {
+            LOG.trace("Processing ingredients with refId={}: {}", refId, ingredientsForRefId);
 
             final Map<QuantityType, List<IngredientSummary>> ingredientByQuantityType = ingredientsForRefId.stream()
                     .collect(Collectors.groupingBy(IngredientSummary::getQuantityType));
 
             ingredientByQuantityType.forEach((quantityType, ingredientsForQuantityType) -> {
+                LOG.trace("Processing refId={} with quantityType={}: {}", refId, quantityType, ingredientsForQuantityType);
                 final Double totalQuantity = ingredientsForQuantityType.stream()
                         .map(IngredientSummary::getQuantity)
                         .mapToDouble(i -> i)
@@ -54,6 +58,9 @@ public class ShoppingListService {
             });
 
         });
+
+        LOG.info("Calculated {} items for shopping list", items.size());
+        LOG.trace("Shopping list items: {}", items);
 
         return new ShoppingList(items);
     }

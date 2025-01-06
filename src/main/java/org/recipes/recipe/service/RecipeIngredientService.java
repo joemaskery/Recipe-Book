@@ -16,7 +16,10 @@ public class RecipeIngredientService {
     private final RecipeIngredientRepository recipeIngredientRepository;
 
     public List<IngredientSummary> getIngredientsForRecipeIds(final List<Integer> recipeIds) {
-        return recipeIngredientRepository.findAllByRecipeIdIn(recipeIds);
+        LOG.trace("Requesting IngredientSummary for recipeIds: {}", recipeIds);
+        final List<IngredientSummary> ingredientSummaries = recipeIngredientRepository.findAllByRecipeIdIn(recipeIds);
+        LOG.trace("Retrieved IngredientSummaries: {}", ingredientSummaries);
+        return ingredientSummaries;
     }
 
 }
