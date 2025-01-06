@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.recipes.testutils.RecipeIngredientTestBuilder.*;
-import static org.recipes.testutils.RecipeTestBuilder.pizza;
-import static org.recipes.testutils.RecipeTestBuilder.tomatoPastaEntity;
+import static org.recipes.testutils.builder.RecipeIngredientTestBuilder.*;
+import static org.recipes.testutils.builder.RecipeTestBuilder.pizza;
+import static org.recipes.testutils.builder.RecipeTestBuilder.tomatoPastaEntity;
 
 @Service
 public class RecipeHelper {

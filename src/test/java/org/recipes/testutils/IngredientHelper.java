@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static org.recipes.testutils.IngredientTestBuilder.*;
+import static org.recipes.testutils.builder.IngredientTestBuilder.*;
 
 @Service
 public class IngredientHelper {

@@ -49,6 +49,7 @@ dependencies {
     testImplementation 'org.testcontainers:mariadb'
     testImplementation 'org.testcontainers:rabbitmq'
     testImplementation 'io.rest-assured:rest-assured'
+    testImplementation 'com.h2database:h2'
 }
 
 tasks.named('test') {
