@@ -13,6 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class ShoppingList {
 
-    List<ShoppingListItem> item;
+    List<ShoppingListItem> items;
 
 }

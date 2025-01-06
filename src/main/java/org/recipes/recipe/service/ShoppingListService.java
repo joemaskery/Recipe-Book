@@ -8,6 +8,7 @@ import org.recipes.recipe.dto.response.ShoppingListItem;
 import org.recipes.recipe.model.QuantityType;
 import org.recipes.recipe.repository.dao.IngredientSummary;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,13 @@ public class ShoppingListService {
         final List<IngredientSummary> ingredients =
                 recipeIngredientService.getIngredientsForRecipeIds(request.getRecipeIds());
 
+        if (CollectionUtils.isEmpty(ingredients)) {
+            LOG.warn("Can't build shopping list - no ingredients found under request: {}", request);
+            return ShoppingList.builder()
+                    .items(List.of())
+                    .build();
+        }
+
         final Map<Integer, List<IngredientSummary>> ingredientsByReferenceId = ingredients.stream()
                 .collect(Collectors.groupingBy(IngredientSummary::getIngredientRefId));
 
@@ -32,7 +40,7 @@ public class ShoppingListService {
 
         ingredientsByReferenceId.forEach((refId, ingredientsForRefId) -> {
 
-            Map<QuantityType, List<IngredientSummary>> ingredientByQuantityType = ingredientsForRefId.stream()
+            final Map<QuantityType, List<IngredientSummary>> ingredientByQuantityType = ingredientsForRefId.stream()
                     .collect(Collectors.groupingBy(IngredientSummary::getQuantityType));
 
             ingredientByQuantityType.forEach((quantityType, ingredientsForQuantityType) -> {

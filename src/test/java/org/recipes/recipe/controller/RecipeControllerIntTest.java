@@ -21,9 +21,9 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.recipes.testutils.AddRecipeRequestTestBuilder.addRecipeRequest;
-import static org.recipes.testutils.RecipeIngredientTestBuilder.*;
-import static org.recipes.testutils.RecipeTestBuilder.tomatoPastaRecipe;
+import static org.recipes.testutils.builder.AddRecipeRequestTestBuilder.addRecipeRequest;
+import static org.recipes.testutils.builder.RecipeIngredientTestBuilder.*;
+import static org.recipes.testutils.builder.RecipeTestBuilder.tomatoPastaRecipe;
 
 @ActiveProfiles("test")
 class RecipeControllerIntTest extends IntegrationTest {

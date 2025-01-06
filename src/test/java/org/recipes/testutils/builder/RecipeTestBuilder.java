@@ -1,4 +1,4 @@
-package org.recipes.testutils;
+package org.recipes.testutils.builder;
 
 import org.recipes.recipe.dto.response.UserRecipe;
 import org.recipes.recipe.dto.response.UserRecipe.UserRecipeBuilder;
