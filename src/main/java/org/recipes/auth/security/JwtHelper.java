@@ -6,13 +6,15 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.security.InvalidParameterException;
 import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.userdetails.UserDetails;
 
 public class JwtHelper {
 
@@ -27,6 +29,13 @@ public class JwtHelper {
                 .expiration(Date.from(now.plus(MINUTES, ChronoUnit.MINUTES)))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
+    }
+
+    public static String extractUsernameWithBearer(String token) {
+        if (StringUtils.isBlank(token) || !token.startsWith("Bearer ")) {
+            throw new InvalidParameterException("Invalid token signature");
+        }
+        return getTokenBody(token.substring(7)).getSubject();
     }
 
     public static String extractUsername(String token) {
