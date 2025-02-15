@@ -10,12 +10,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-@Entity(name = "users")
+@Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @ToString(exclude = {"recipes"})
+@Table(name = "users")
 public class UserEntity implements UserDetails {
 
     @Id

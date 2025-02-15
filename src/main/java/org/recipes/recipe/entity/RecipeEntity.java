@@ -8,11 +8,12 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Entity(name = "recipes")
+@Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "recipes")
 public class RecipeEntity {
 
     @Id

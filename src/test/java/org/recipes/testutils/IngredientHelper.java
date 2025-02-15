@@ -13,12 +13,8 @@ import static org.recipes.testutils.builder.IngredientTestBuilder.*;
 public class IngredientHelper {
 
     @Autowired IngredientReferenceRepository ingredientRepository;
-    @Autowired UserHelper userHelper;
 
     public List<IngredientEntity> saveIngredients() {
-        userHelper.saveUsers();
-
-        // save ingredient references
         return ingredientRepository.saveAll(List.of(
                 tomatoReference(), pastaReference(), cheddarCheeseReference(), garlicBreadReference(),
                 pizzaDoughReference()

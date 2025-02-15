@@ -2,12 +2,13 @@ package org.recipes.recipe.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.recipes.auth.security.JwtHelper;
 import org.recipes.recipe.dto.request.AddRecipeRequest;
 import org.recipes.recipe.dto.request.IngredientInput;
 import org.recipes.recipe.dto.response.RecipeIngredient;
 import org.recipes.recipe.dto.response.UserRecipe;
-import org.recipes.recipe.entity.RecipeIngredientEntity;
 import org.recipes.recipe.entity.RecipeEntity;
+import org.recipes.recipe.entity.RecipeIngredientEntity;
 import org.recipes.recipe.repository.RecipeRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,17 @@ public class RecipeService {
     public List<UserRecipe> getByUserId(final Integer userId) {
         List<RecipeEntity> recipeEntities = this.recipeRepository.findAllByUserId(userId);
         LOG.debug("[RecipeService] Found {} recipes for User {}", recipeEntities.size(), userId);
+        return mapToUserRecipes(recipeEntities);
+    }
+
+    public List<UserRecipe> getByUserToken(final String token) {
+        LOG.trace("Attempting to retrieve user recipes by token: {}", token);
+        final String userEmail = JwtHelper.extractUsernameWithBearer(token);
+        LOG.trace("Extracted user email: {}", userEmail);
+
+        LOG.info("Fetching recipes for user {}", userEmail);
+        List<RecipeEntity> recipeEntities = this.recipeRepository.findAllByUserEmail(userEmail);
+        LOG.debug("[RecipeService] Found {} recipes for User {}", recipeEntities.size(), userEmail);
         return mapToUserRecipes(recipeEntities);
     }
 

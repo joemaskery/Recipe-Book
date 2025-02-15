@@ -20,9 +20,15 @@ public class RecipeController {
     private final RecipeService recipeService;
 
     @GetMapping("/get-for-user/{userId}")
-    public ResponseEntity<List<UserRecipe>> getUserRecipes(@PathVariable Integer userId) {
+    public ResponseEntity<List<UserRecipe>> getUserRecipesByUserId(@PathVariable Integer userId) {
         LOG.info("[RecipeController] Received request to get user {} recipes", userId);
         return ResponseEntity.ok(this.recipeService.getByUserId(userId));
+    }
+
+    @GetMapping("/get-for-user")
+    public ResponseEntity<List<UserRecipe>> getUserRecipes(@RequestHeader(name="Authorization") String token) {
+        LOG.info("[RecipeController] Received request to get user recipes");
+        return ResponseEntity.ok(this.recipeService.getByUserToken(token));
     }
 
     @PostMapping("/add")
