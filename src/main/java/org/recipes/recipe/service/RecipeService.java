@@ -1,5 +1,6 @@
 package org.recipes.recipe.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.recipes.auth.security.JwtHelper;
@@ -36,6 +37,14 @@ public class RecipeService {
         List<RecipeEntity> recipeEntities = this.recipeRepository.findAllByUserEmail(userEmail);
         LOG.debug("[RecipeService] Found {} recipes for User {}", recipeEntities.size(), userEmail);
         return mapToUserRecipes(recipeEntities);
+    }
+
+    public UserRecipe getRecipeById(final Integer recipeId) {
+        RecipeEntity recipeEntity = this.recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new EntityNotFoundException("No recipe found with ID " + recipeId));
+
+        LOG.debug("[RecipeService] Found recipe for with recipeId {}", recipeId);
+        return mapToUserRecipe(recipeEntity);
     }
 
     public UserRecipe addRecipe(final AddRecipeRequest request) {
@@ -96,6 +105,7 @@ public class RecipeService {
                         .category(ingredient.getCategory())
                         .quantity(ingredient.getQuantity())
                         .quantityType(ingredient.getQuantityType())
+                        .quantityName(ingredient.getQuantityType().getName())
                         .build())
                 .toList();
     }
