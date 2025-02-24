@@ -15,6 +15,7 @@ import org.recipes.recipe.repository.RecipeIngredientRepository;
 import org.recipes.recipe.repository.RecipeRepository;
 import org.recipes.testutils.IngredientHelper;
 import org.recipes.testutils.RecipeHelper;
+import org.recipes.testutils.UserHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -40,6 +41,7 @@ class RecipeControllerIntTest extends IntegrationTest {
     @Autowired RecipeIngredientRepository recipeIngredientRepository;
     @Autowired RecipeHelper recipeHelper;
     @Autowired IngredientHelper ingredientHelper;
+    @Autowired UserHelper userHelper;
 
     @Test
     void getUserRecipesByUserId_returns_all_user_recipes() {
@@ -95,9 +97,36 @@ class RecipeControllerIntTest extends IntegrationTest {
     }
 
     @Test
+    void getRecipeById_returns_recipe() {
+        // given
+        recipeHelper.saveRecipes();
+
+        // when
+        Response response = given()
+                .get("/recipe/1");
+        final UserRecipe recipe = response.getBody().as(UserRecipe.class);
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(200);
+
+        assertThat(recipe).usingRecursiveComparison()
+                .ignoringFields("ingredients")
+                .isEqualTo(tomatoPastaRecipe(RECIPE_ID_1, USER_ID_1).build());
+
+        assertThat(recipe.getIngredients()).containsExactlyInAnyOrder(
+                tomato(1.0).build(),
+                pasta(100.0).build(),
+                cheese(30.0).build(),
+                garlicBread(0.5).build()
+        );
+    }
+
+    @Test
     void addRecipe_adds_recipe() {
         // given
+        userHelper.saveUsers();
         ingredientHelper.saveIngredients();
+
         final AddRecipeRequest request = addRecipeRequest(USER_ID_1).build();
         // when
         final Response response = given()

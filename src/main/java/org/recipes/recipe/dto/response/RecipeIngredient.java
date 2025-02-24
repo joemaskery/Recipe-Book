@@ -16,5 +16,6 @@ public class RecipeIngredient {
     private String category;
     private Double quantity;
     private QuantityType quantityType;
+    private String quantityName;
 
 }

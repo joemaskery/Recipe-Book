@@ -22,7 +22,8 @@ public class RecipeIngredientTestBuilder {
                 .name("Tomato")
                 .category("Fruit")
                 .quantity(quantity)
-                .quantityType(QuantityType.ITEMS);
+                .quantityType(QuantityType.ITEMS)
+                .quantityName(QuantityType.ITEMS.getName());
     }
 
     public static RecipeIngredientEntity pastaEntity(final Integer recipeId, final Integer ingredientRefId,
@@ -40,7 +41,8 @@ public class RecipeIngredientTestBuilder {
                 .name("Fusilli Pasta")
                 .category("Baking & Grains")
                 .quantity(quantity)
-                .quantityType(QuantityType.GRAM);
+                .quantityType(QuantityType.GRAM)
+                .quantityName((QuantityType.GRAM.getName()));
     }
 
     public static RecipeIngredientEntity cheeseEntity(final Integer recipeId, final Integer ingredientRefId,
@@ -58,7 +60,8 @@ public class RecipeIngredientTestBuilder {
                 .name("Cheddar Cheese")
                 .category("Dairy")
                 .quantity(quantity)
-                .quantityType(QuantityType.GRAM);
+                .quantityType(QuantityType.GRAM)
+                .quantityName(QuantityType.GRAM.getName());
     }
 
     public static RecipeIngredientEntity garlicBreadEntity(final Integer recipeId, final Integer ingredientRefId,
@@ -76,7 +79,8 @@ public class RecipeIngredientTestBuilder {
                 .name("Garlic Bread")
                 .category("Baking & Grains")
                 .quantity(quantity)
-                .quantityType(QuantityType.ITEMS);
+                .quantityType(QuantityType.ITEMS)
+                .quantityName(QuantityType.ITEMS.getName());
     }
 
     public static RecipeIngredientEntity pizzaDoughEntity(final Integer recipeId, final Integer ingredientRefId,
