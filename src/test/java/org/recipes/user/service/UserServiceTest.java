@@ -5,13 +5,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.recipes.auth.security.JwtHelper;
 import org.recipes.user.dto.AddUserRequest;
 import org.recipes.user.dto.UpdateUserRequest;
 import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.UserRepository;
+import org.recipes.user.repository.dto.UserEntityId;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
@@ -99,4 +103,22 @@ class UserServiceTest {
                 .hasMessage(String.format("Invalid request to add user: [%s]", EMAIL_ALREADY_IN_USE_MESSAGE));
     }
 
+    @Test
+    void getUserIdByToken_returns_user_id() {
+        // given
+        final String token = String.format("Bearer %s", JwtHelper.generateToken("test-email@email.com"));
+        when(userRepository.findUserIdByEmail("test-email@email.com")).thenReturn(Optional.of(new UserEntityId(123)));
+        // when, then
+        assertThat(underTest.getUserIdByToken(token)).isEqualTo(123);
+    }
+
+    @Test
+    void getUserIdByToken_throws_exception_if_email_does_not_exist() {
+        // given
+        final String token = String.format("Bearer %s", JwtHelper.generateToken("test-email@email.com"));
+        // when, then
+        assertThatThrownBy(() -> underTest.getUserIdByToken(token))
+                .isInstanceOf(UsernameNotFoundException.class)
+                .hasMessage("User not found with email: test-email@email.com");
+    }
 }

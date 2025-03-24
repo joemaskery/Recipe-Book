@@ -11,6 +11,7 @@ import org.recipes.recipe.dto.response.UserRecipe;
 import org.recipes.recipe.entity.RecipeEntity;
 import org.recipes.recipe.entity.RecipeIngredientEntity;
 import org.recipes.recipe.repository.RecipeRepository;
+import org.recipes.user.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
 public class RecipeService {
 
     private final RecipeRepository recipeRepository;
+    private final UserService userService;
 
     public List<UserRecipe> getByUserId(final Integer userId) {
         List<RecipeEntity> recipeEntities = this.recipeRepository.findAllByUserId(userId);
@@ -47,15 +49,18 @@ public class RecipeService {
         return mapToUserRecipe(recipeEntity);
     }
 
-    public UserRecipe addRecipe(final AddRecipeRequest request) {
+    public UserRecipe addRecipe(final String token, final AddRecipeRequest request) {
+        final Integer userId = userService.getUserIdByToken(token);
+        LOG.info("[RecipeService] Saving recipe {} for user {}", request.getName(), userId);
         LOG.debug("[RecipeService] Saving recipe: {}", request);
-        final RecipeEntity savedRecipe = recipeRepository.save(toRecipe(request));
+        final RecipeEntity savedRecipe = recipeRepository.save(toRecipe(userId, request));
+        LOG.info("[RecipeService] Saved new recipe with ID: {}", savedRecipe.getRecipeId());
         return mapToUserRecipe(savedRecipe);
     }
 
-    private RecipeEntity toRecipe(final AddRecipeRequest request) {
+    private RecipeEntity toRecipe(final Integer userId, final AddRecipeRequest request) {
         return RecipeEntity.builder()
-                .userId(request.getUserId())
+                .userId(userId)
                 .name(request.getName())
                 .description(request.getDescription())
                 .weblink(request.getWeblink())
