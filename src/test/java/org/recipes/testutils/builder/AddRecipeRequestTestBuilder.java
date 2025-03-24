@@ -9,9 +9,8 @@ import java.util.List;
 
 public class AddRecipeRequestTestBuilder {
 
-    public static AddRecipeRequestBuilder addRecipeRequest(final Integer userId) {
+    public static AddRecipeRequestBuilder addRecipeRequest() {
         return AddRecipeRequest.builder()
-                .userId(userId)
                 .name("recipe-name")
                 .description("recipe-description")
                 .weblink("www.recipe-book.com")

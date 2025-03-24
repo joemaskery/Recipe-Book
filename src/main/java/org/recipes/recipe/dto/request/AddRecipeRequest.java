@@ -9,7 +9,6 @@ import java.util.List;
 @Builder
 public class AddRecipeRequest {
 
-    private final Integer userId;
     private final String name;
     private final String description;
     private final String weblink;

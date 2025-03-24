@@ -5,11 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.recipes.auth.security.JwtHelper;
 import org.recipes.user.dto.AddUserRequest;
 import org.recipes.user.dto.UpdateUserRequest;
 import org.recipes.user.dto.User;
 import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.UserRepository;
+import org.recipes.user.repository.dto.UserEntityId;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,15 +47,15 @@ public class UserService {
                 .toList();
     }
 
-    public User addUser(AddUserRequest request) {
+    public User addUser(final AddUserRequest request) {
         validateAddUserRequest(request);
         LOG.debug("[UserService] Saving user: {}", request);
         final UserEntity savedUser = addNewUser(request);
         return mapToUser(savedUser);
     }
 
-    public void deleteUser(Integer userId) {
-        Optional<UserEntity> userOptional = this.userRepository.findById(userId);
+    public void deleteUser(final Integer userId) {
+        final Optional<UserEntity> userOptional = this.userRepository.findById(userId);
         if (userOptional.isEmpty()) {
             LOG.debug("[UserService] User not found with userId: {}", userId);
             throw new IllegalStateException("User not found for ID: " + userId);
@@ -63,7 +66,7 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUser(UpdateUserRequest request) {
+    public User updateUser(final UpdateUserRequest request) {
         LOG.debug("[UserService] Update user request: {}", request);
         final Optional<UserEntity> userOptional = this.userRepository.findById(request.getUserId());
 
@@ -77,6 +80,16 @@ public class UserService {
         }
     }
 
+    public Integer getUserIdByToken(final String token) {
+        LOG.trace("[UserService] Attempting to extract user email from token: {}", token);
+        final String userEmail = JwtHelper.extractUsernameWithBearer(token);
+        LOG.trace("[UserService] Extracted user email: {}", userEmail);
+
+        final UserEntityId userId = userRepository.findUserIdByEmail(userEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + userEmail));
+        LOG.trace("[UserService] Retrieved userId {} for email {}", userId, userEmail);
+        return userId.userId();
+    }
 
     private User mapToUser(final UserEntity userEntity) {
         return User.builder()
@@ -87,7 +100,7 @@ public class UserService {
                 .build();
     }
 
-    private void updateUserFields(UserEntity user, UpdateUserRequest request) {
+    private void updateUserFields(final UserEntity user, final UpdateUserRequest request) {
         if (!StringUtils.isBlank(request.getFirstName())) {
             user.setFirstName(request.getFirstName());
             LOG.trace("[UserService] User first name was set to {}", request.getFirstName());
@@ -104,7 +117,7 @@ public class UserService {
         }
     }
 
-    private UserEntity addNewUser(AddUserRequest request) {
+    private UserEntity addNewUser(final AddUserRequest request) {
         return this.userRepository.save(UserEntity.builder()
                 .firstName(request.getFirstName())
                 .secondName(request.getSecondName())
@@ -113,7 +126,7 @@ public class UserService {
                 .build());
     }
 
-    private void validateAddUserRequest(AddUserRequest request) {
+    private void validateAddUserRequest(final AddUserRequest request) {
         LOG.debug("[UserService] Validating addUserRequest: {}", request);
         List<String> validationErrors = new ArrayList<>();
 

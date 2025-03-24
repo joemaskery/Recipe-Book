@@ -126,10 +126,12 @@ class RecipeControllerIntTest extends IntegrationTest {
         // given
         userHelper.saveUsers();
         ingredientHelper.saveIngredients();
+        final String token = String.format("Bearer %s", JwtHelper.generateToken(USER_1_EMAIL));
 
-        final AddRecipeRequest request = addRecipeRequest(USER_ID_1).build();
+        final AddRecipeRequest request = addRecipeRequest().build();
         // when
         final Response response = given()
+                .header("Authorization", token)
                 .body(request)
                 .contentType(ContentType.JSON)
                 .post("/recipe/add");

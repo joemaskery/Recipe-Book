@@ -45,9 +45,10 @@ public class RecipeController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<UserRecipe> addRecipe(@RequestBody final AddRecipeRequest request) {
+    public ResponseEntity<UserRecipe> addRecipe(@RequestHeader(name="Authorization") final String token,
+                                                @RequestBody final AddRecipeRequest request) {
         LOG.info("[RecipeController] Received request to add recipe {}", request.getName());
-        return ResponseEntity.ok(this.recipeService.addRecipe(request));
+        return ResponseEntity.ok(this.recipeService.addRecipe(token, request));
     }
 
 }
