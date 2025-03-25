@@ -10,21 +10,21 @@ import java.util.List;
 @Service
 public class UserHelper {
 
+    public static final UserEntity USER_1 = UserEntity.builder()
+            .firstName("name1")
+            .secondName("surname1")
+            .email("email1@domain.com")
+            .build();
+
+    public static final UserEntity USER_2 = UserEntity.builder()
+            .firstName("name2")
+            .secondName("surname2")
+            .email("email2@domain.com")
+            .build();
+
     @Autowired UserRepository userRepository;
 
     public void saveUsers() {
-        UserEntity user1 = UserEntity.builder()
-                .firstName("name1")
-                .secondName("surname1")
-                .email("email1@domain.com")
-                .build();
-        UserEntity user2 = UserEntity.builder()
-                .firstName("name2")
-                .secondName("surname2")
-                .email("email2@domain.com")
-                .build();
-
-        userRepository.saveAll(List.of(user1, user2));
+        userRepository.saveAll(List.of(USER_1, USER_2));
     }
-
 }

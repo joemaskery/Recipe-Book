@@ -21,7 +21,7 @@ public class JwtHelper {
     private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private static final int MINUTES = 60;
 
-    public static String generateToken(String email) {
+    public static String generateToken(final String email) {
         var now = Instant.now();
         return Jwts.builder()
                 .subject(email)
@@ -31,23 +31,27 @@ public class JwtHelper {
                 .compact();
     }
 
-    public static String extractUsernameWithBearer(String token) {
+    public static String generateTokenWithBearerPrefix(final String email) {
+        return String.format("Bearer %s", generateToken(email));
+    }
+
+    public static String extractUsernameWithBearer(final String token) {
         if (StringUtils.isBlank(token) || !token.startsWith("Bearer ")) {
             throw new InvalidParameterException("Invalid token signature");
         }
         return getTokenBody(token.substring(7)).getSubject();
     }
 
-    public static String extractUsername(String token) {
+    public static String extractUsername(final String token) {
         return getTokenBody(token).getSubject();
     }
 
-    public static Boolean validateToken(String token, UserDetails userDetails) {
+    public static Boolean validateToken(final String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
-    private static Claims getTokenBody(String token) {
+    private static Claims getTokenBody(final String token) {
         try {
             return Jwts
                     .parser()
@@ -60,7 +64,7 @@ public class JwtHelper {
         }
     }
 
-    private static boolean isTokenExpired(String token) {
+    private static boolean isTokenExpired(final String token) {
         Claims claims = getTokenBody(token);
         return claims.getExpiration().before(new Date());
     }
