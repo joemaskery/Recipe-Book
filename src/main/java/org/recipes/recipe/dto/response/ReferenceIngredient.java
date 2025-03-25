@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ReferenceIngredient {
 
+    private Integer id;
     private String name;
     private String category;
     private boolean allUsers;

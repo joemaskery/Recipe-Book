@@ -4,6 +4,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.recipes.IntegrationTest;
+import org.recipes.auth.security.JwtHelper;
 import org.recipes.recipe.dto.request.AddIngredientRequest;
 import org.recipes.recipe.dto.response.ReferenceIngredient;
 import org.recipes.recipe.entity.IngredientEntity;
@@ -16,6 +17,8 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.recipes.testutils.UserHelper.USER_1;
+import static org.recipes.testutils.UserHelper.USER_2;
 
 @ActiveProfiles("test")
 class IngredientReferenceControllerIntTest extends IntegrationTest {
@@ -28,17 +31,23 @@ class IngredientReferenceControllerIntTest extends IntegrationTest {
         // given
         userHelper.saveUsers();
         ingredientRepository.saveAll(List.of(
-                IngredientEntity.builder().name("Egg").category("Protein").userId(1).allUsers(false).build(),
-                IngredientEntity.builder().name("Cheese").category("Dairy").userId(2).allUsers(false).build(),
+                IngredientEntity.builder().name("Egg").category("Protein").userId(USER_1.getUserId()).allUsers(false).build(),
+                IngredientEntity.builder().name("Cheese").category("Dairy").userId(USER_2.getUserId()).allUsers(false).build(),
                 IngredientEntity.builder().name("Pepper").category("Vegetable").userId(null).allUsers(true).build()
         ));
+
+        final String token = JwtHelper.generateTokenWithBearerPrefix(USER_1.getEmail());
+
         // when
-        Response response = given().get("/ingredient/get-for-user/1");
+        Response response = given()
+                .header("Authorization", token)
+                .get("/ingredient/get-for-user");
         final ReferenceIngredient[] recipes = response.getBody().as(ReferenceIngredient[].class);
+
         // then
         assertThat(recipes).containsExactlyInAnyOrder(
-                ReferenceIngredient.builder().name("Egg").category("Protein").allUsers(false).build(),
-                ReferenceIngredient.builder().name("Pepper").category("Vegetable").allUsers(true).build()
+                new ReferenceIngredient(1, "Egg", "Protein", false),
+                new ReferenceIngredient(3, "Pepper", "Vegetable", true)
         );
     }
 
@@ -55,7 +64,7 @@ class IngredientReferenceControllerIntTest extends IntegrationTest {
         final ReferenceIngredient ingredientResponse = response.getBody().as(ReferenceIngredient.class);
         // then
         assertThat(ingredientRepository.existsById(1)).isTrue();
-        assertThat(ingredientResponse).isEqualTo(new ReferenceIngredient("Apple", "Fruit", false));
+        assertThat(ingredientResponse).isEqualTo(new ReferenceIngredient(1, "Apple", "Fruit", false));
     }
 
 }

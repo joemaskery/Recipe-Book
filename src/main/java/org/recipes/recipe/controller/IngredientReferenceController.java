@@ -7,7 +7,12 @@ import org.recipes.recipe.dto.response.ReferenceIngredient;
 import org.recipes.recipe.service.IngredientReferenceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
@@ -20,10 +25,11 @@ public class IngredientReferenceController {
 
     private final IngredientReferenceService ingredientReferenceService;
 
-    @GetMapping("get-for-user/{userId}")
-    public ResponseEntity<List<ReferenceIngredient>> getUserIngredients(@PathVariable final Integer userId) {
-        LOG.info("Received request to get ingredients for user {}", userId);
-        return ResponseEntity.ok(ingredientReferenceService.getAllForUser(userId));
+    @GetMapping("get-for-user")
+    public ResponseEntity<List<ReferenceIngredient>> getUserIngredients(
+            @RequestHeader(name="Authorization") final String token) {
+        LOG.info("Received request to get reference ingredients");
+        return ResponseEntity.ok(ingredientReferenceService.getAllForUser(token));
     }
 
     @PostMapping("/add")

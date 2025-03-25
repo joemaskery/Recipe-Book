@@ -6,6 +6,7 @@ import org.recipes.recipe.dto.request.AddIngredientRequest;
 import org.recipes.recipe.dto.response.ReferenceIngredient;
 import org.recipes.recipe.entity.IngredientEntity;
 import org.recipes.recipe.repository.IngredientReferenceRepository;
+import org.recipes.user.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 public class IngredientReferenceService {
 
     private final IngredientReferenceRepository ingredientRepository;
+    private final UserService userService;
 
     public ReferenceIngredient addIngredient(final AddIngredientRequest request) {
         LOG.debug("[IngredientReferenceService] Saving ingredient: {}", request);
@@ -24,7 +26,8 @@ public class IngredientReferenceService {
         return toReferenceIngredient(savedIngredient);
     }
 
-    public List<ReferenceIngredient> getAllForUser(final Integer userId) {
+    public List<ReferenceIngredient> getAllForUser(final String userToken) {
+        final Integer userId = userService.getUserIdByToken(userToken);
         final List<IngredientEntity> ingredientEntities = ingredientRepository
                 .findAllByUserIdEqualsOrAllUsersIsTrue(userId);
         LOG.debug("Found {} ingredients for user {}", ingredientEntities.size(), userId);
@@ -33,6 +36,7 @@ public class IngredientReferenceService {
 
     private ReferenceIngredient toReferenceIngredient(final IngredientEntity entity) {
         return ReferenceIngredient.builder()
+                .id(entity.getReferenceId())
                 .name(entity.getName())
                 .category(entity.getCategory())
                 .allUsers(entity.isAllUsers())
