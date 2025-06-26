@@ -56,7 +56,7 @@ class AuthControllerIntTest extends IntegrationTest {
     }
 
     @Test
-    void registerUser_validates_request() {
+    void registerUser_returns_400_for_invalid_request() {
         // given
         AddUserRequest request = AddUserRequest.builder()
                 .firstName("")
@@ -142,6 +142,28 @@ class AuthControllerIntTest extends IntegrationTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(401);
+    }
+
+    @Test
+    void loginUser_returns_400_for_invalid_request() {
+        // given
+        final LoginRequest request = LoginRequest.builder()
+                .email(null)
+                .password("   ")
+                .build();
+
+        // when
+        Response response = given()
+                .body(request)
+                .contentType(ContentType.JSON)
+                .when()
+                .post("/auth/login");
+
+        final ErrorResponse errorResponse = response.getBody().as(ErrorResponse.class);
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(400);
+        assertThat(errorResponse.getError()).isNotBlank();
     }
 
     private User givenUserExists(final String email, final String password) {

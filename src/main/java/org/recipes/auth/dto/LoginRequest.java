@@ -1,5 +1,6 @@
 package org.recipes.auth.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
 
@@ -7,7 +8,9 @@ import lombok.Data;
 @Builder
 public class LoginRequest {
 
+    @NotBlank(message = "Email must not be blank")
     private final String email;
-    private final String password;
 
+    @NotBlank(message = "Password must not be blank")
+    private final String password;
 }
