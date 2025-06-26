@@ -23,12 +23,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
-    private static final String INVALID_FIRST_NAME_MESSAGE = "First Name must not be blank";
-    private static final String INVALID_SECOND_NAME_MESSAGE = "Second Name must not be blank";
     private static final String INVALID_EMAIL_MESSAGE = "Invalid email address";
     private static final String EMAIL_ALREADY_IN_USE_MESSAGE = "Email address already in use";
-    private static final String INVALID_PASSWORD_MESSAGE = "Password must not be blank";
-    private static final String PASSWORDS_DO_NOT_MATCH_MESSAGE = "Passwords do not match";
 
     @Mock UserRepository userRepository;
     @InjectMocks UserService userService;
@@ -67,22 +63,19 @@ class UserServiceTest {
     }
 
     @Test
-    void addUser_correctly_validates_requests() {
+    void addUser_throws_exception_if_email_is_invalid() {
         // given
         final var addUserRequest = AddUserRequest.builder()
                 .firstName(" ")
                 .secondName(" ")
                 .email("invalid-email@email")
-                .password1(" ")
-                .password2("password2")
+                .password(" ")
                 .build();
 
         // when, then
         assertThatThrownBy(() -> userService.addUser(addUserRequest))
                 .isInstanceOf(UserValidationException.class)
-                .hasMessage(String.format("[%s, %s, %s, %s, %s]",
-                        INVALID_EMAIL_MESSAGE, INVALID_FIRST_NAME_MESSAGE, INVALID_SECOND_NAME_MESSAGE,
-                        INVALID_PASSWORD_MESSAGE, PASSWORDS_DO_NOT_MATCH_MESSAGE));
+                .hasMessage(INVALID_EMAIL_MESSAGE);
     }
 
     @Test
@@ -92,16 +85,15 @@ class UserServiceTest {
                 .firstName("firstName")
                 .secondName("secondName")
                 .email("email@domain.com")
-                .password1("password")
-                .password2("password")
+                .password("password")
                 .build();
 
-        when(userRepository.findUserByEmail("email@domain.com")).thenReturn(Optional.of(new UserEntity()));
+        when(userRepository.existsByEmail("email@domain.com")).thenReturn(true);
 
         // when, then
         assertThatThrownBy(() -> userService.addUser(addUserRequest))
                 .isInstanceOf(UserValidationException.class)
-                .hasMessage(String.format("[%s]", EMAIL_ALREADY_IN_USE_MESSAGE));
+                .hasMessage(EMAIL_ALREADY_IN_USE_MESSAGE);
     }
 
     @Test

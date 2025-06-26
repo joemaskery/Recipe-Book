@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -49,7 +48,7 @@ public class UserService {
     }
 
     public User addUser(final AddUserRequest request) {
-        validateAddUserRequest(request);
+        validateNewEmailIsValid(request.getEmail());
         LOG.debug("[UserService] Saving user: {}", request);
         final UserEntity savedUser = addNewUser(request);
         return mapToUser(savedUser);
@@ -123,40 +122,28 @@ public class UserService {
                 .firstName(request.getFirstName())
                 .secondName(request.getSecondName())
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword1()))
+                .password(passwordEncoder.encode(request.getPassword()))
                 .build());
     }
 
-    private void validateAddUserRequest(final AddUserRequest request) {
-        LOG.debug("[UserService] Validating addUserRequest: {}", request);
+    private void validateNewEmailIsValid(final String email) {
+        LOG.debug("[UserService] Validating email is a valid new email: {}", email);
         List<String> validationErrors = new ArrayList<>();
 
-        if (!EmailValidator.getInstance().isValid(request.getEmail())) {
+        if (!EmailValidator.getInstance().isValid(email)) {
             validationErrors.add("Invalid email address");
-        } else if (emailAlreadyInUse(request.getEmail())){
+
+        } else if (emailAlreadyInUse(email)){
             validationErrors.add("Email address already in use");
-        }
-        if (StringUtils.isBlank(request.getFirstName())) {
-            validationErrors.add("First Name must not be blank");
-        }
-        if (StringUtils.isBlank(request.getSecondName())) {
-            validationErrors.add("Second Name must not be blank");
-        }
-        if (StringUtils.isBlank(request.getPassword1())) {
-            validationErrors.add("Password must not be blank");
-        }
-        if (!Objects.equals(request.getPassword1(), request.getPassword2())) {
-            validationErrors.add("Passwords do not match");
         }
 
         if (!validationErrors.isEmpty()) {
             LOG.error("[UserService] addUserRequest failed validation with errors: {}", validationErrors);
-            throw new UserValidationException(validationErrors.toString());
+            throw new UserValidationException(validationErrors.getFirst());
         }
     }
 
     private boolean emailAlreadyInUse(final String email) {
-        return userRepository.findUserByEmail(email).isPresent();
+        return userRepository.existsByEmail(email);
     }
-
 }

@@ -94,6 +94,4 @@ public class UserControllerIntTest extends IntegrationTest {
         assertThat(userRepository.findById(1).get()).usingRecursiveComparison().ignoringFields("recipes")
                 .isEqualTo(updatedUser);
     }
-
-
 }

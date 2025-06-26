@@ -1,5 +1,6 @@
 package org.recipes.user.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
 
@@ -7,10 +8,15 @@ import lombok.Data;
 @Builder
 public class AddUserRequest {
 
+    @NotBlank(message = "First Name must not be blank")
     private final String firstName;
-    private final String secondName;
-    private final String email;
-    private final String password1;
-    private final String password2;
 
+    @NotBlank(message = "Second Name must not be blank")
+    private final String secondName;
+
+    @NotBlank(message = "Email must not be blank")
+    private final String email;
+
+    @NotBlank(message = "Password must not be blank")
+    private final String password;
 }
