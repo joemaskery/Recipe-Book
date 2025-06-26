@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.recipes.auth.exception.UserValidationException;
 import org.recipes.auth.security.JwtHelper;
 import org.recipes.user.dto.AddUserRequest;
 import org.recipes.user.dto.UpdateUserRequest;
@@ -27,7 +28,7 @@ class UserServiceTest {
     private static final String INVALID_EMAIL_MESSAGE = "Invalid email address";
     private static final String EMAIL_ALREADY_IN_USE_MESSAGE = "Email address already in use";
     private static final String INVALID_PASSWORD_MESSAGE = "Password must not be blank";
-    private static final String PASSWORDS_DONT_MATCH_MESSAGE = "Passwords do not match";
+    private static final String PASSWORDS_DO_NOT_MATCH_MESSAGE = "Passwords do not match";
 
     @Mock UserRepository userRepository;
     @InjectMocks UserService userService;
@@ -78,10 +79,10 @@ class UserServiceTest {
 
         // when, then
         assertThatThrownBy(() -> userService.addUser(addUserRequest))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(String.format("Invalid request to add user: [%s, %s, %s, %s, %s]",
+                .isInstanceOf(UserValidationException.class)
+                .hasMessage(String.format("[%s, %s, %s, %s, %s]",
                         INVALID_EMAIL_MESSAGE, INVALID_FIRST_NAME_MESSAGE, INVALID_SECOND_NAME_MESSAGE,
-                        INVALID_PASSWORD_MESSAGE, PASSWORDS_DONT_MATCH_MESSAGE));
+                        INVALID_PASSWORD_MESSAGE, PASSWORDS_DO_NOT_MATCH_MESSAGE));
     }
 
     @Test
@@ -99,8 +100,8 @@ class UserServiceTest {
 
         // when, then
         assertThatThrownBy(() -> userService.addUser(addUserRequest))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage(String.format("Invalid request to add user: [%s]", EMAIL_ALREADY_IN_USE_MESSAGE));
+                .isInstanceOf(UserValidationException.class)
+                .hasMessage(String.format("[%s]", EMAIL_ALREADY_IN_USE_MESSAGE));
     }
 
     @Test

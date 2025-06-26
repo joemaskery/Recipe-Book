@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.recipes.auth.exception.UserValidationException;
 import org.recipes.auth.security.JwtHelper;
 import org.recipes.user.dto.AddUserRequest;
 import org.recipes.user.dto.UpdateUserRequest;
@@ -150,7 +151,7 @@ public class UserService {
 
         if (!validationErrors.isEmpty()) {
             LOG.error("[UserService] addUserRequest failed validation with errors: {}", validationErrors);
-            throw new IllegalStateException("Invalid request to add user: " + validationErrors);
+            throw new UserValidationException(validationErrors.toString());
         }
     }
 
