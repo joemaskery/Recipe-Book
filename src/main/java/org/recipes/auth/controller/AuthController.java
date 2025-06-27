@@ -1,5 +1,6 @@
 package org.recipes.auth.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.recipes.auth.service.AuthService;
@@ -22,15 +23,14 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody final AddUserRequest request) {
+    public ResponseEntity<User> registerUser(@Valid @RequestBody final AddUserRequest request) {
         LOG.info("[UserController] Received request to add user {}", request.getEmail());
         return ResponseEntity.ok(this.userService.addUser(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> loginUser(@RequestBody final LoginRequest request) {
+    public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody final LoginRequest request) {
         LOG.info("[UserController] Received request to login for user {}", request.getEmail());
         return ResponseEntity.ok(this.authService.login(request.getEmail(), request.getPassword()));
     }
-
 }

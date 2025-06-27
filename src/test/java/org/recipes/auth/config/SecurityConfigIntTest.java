@@ -51,8 +51,7 @@ public class SecurityConfigIntTest extends IntegrationTest {
                         .firstName("firstName")
                         .secondName("secondName")
                         .email(email)
-                        .password1(password)
-                        .password2(password)
+                        .password(password)
                         .build()
         );
     }

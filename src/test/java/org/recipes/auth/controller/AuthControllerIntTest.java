@@ -4,6 +4,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.recipes.IntegrationTest;
+import org.recipes.auth.exception.ErrorResponse;
 import org.recipes.user.dto.AddUserRequest;
 import org.recipes.auth.dto.LoginRequest;
 import org.recipes.auth.dto.LoginResponse;
@@ -26,14 +27,13 @@ class AuthControllerIntTest extends IntegrationTest {
     @Autowired UserRepository userRepository;
 
     @Test
-    void user_can_register() {
+    void registerUser_saves_user_to_database() {
         // given
         AddUserRequest request = AddUserRequest.builder()
                 .firstName("firstName")
                 .secondName("secondName")
                 .email("test@email.com")
-                .password1("a-password")
-                .password2("a-password")
+                .password("a-password")
                 .build();
 
         // when
@@ -55,9 +55,32 @@ class AuthControllerIntTest extends IntegrationTest {
         assertThat(savedUser.getPassword()).isNotBlank();
     }
 
+    @Test
+    void registerUser_returns_400_for_invalid_request() {
+        // given
+        AddUserRequest request = AddUserRequest.builder()
+                .firstName("")
+                .secondName("   ")
+                .email(null)
+                .password("       ")
+                .build();
+
+        // when
+        Response response = given()
+                .body(request)
+                .contentType(ContentType.JSON)
+                .when()
+                .post("/auth/register");
+
+        final ErrorResponse errorResponse = response.getBody().as(ErrorResponse.class);
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(400);
+        assertThat(errorResponse.getError()).isNotBlank();
+    }
 
     @Test
-    void user_login_provides_token_for_correct_password() {
+    void loginUser_provides_token_for_correct_password() {
         // given
         givenUserExists(USER_EMAIL, USER_PASSWORD);
 
@@ -82,7 +105,7 @@ class AuthControllerIntTest extends IntegrationTest {
     }
 
     @Test
-    void login_returns_401_if_password_is_incorrect() {
+    void loginUser_returns_401_if_password_is_incorrect() {
         // given
         givenUserExists(USER_EMAIL, USER_PASSWORD);
 
@@ -103,7 +126,7 @@ class AuthControllerIntTest extends IntegrationTest {
     }
 
     @Test
-    void login_returns_401_if_user_does_not_exist() {
+    void loginUser_returns_401_if_user_does_not_exist() {
         // given
         final LoginRequest request = LoginRequest.builder()
                 .email(USER_EMAIL)
@@ -121,16 +144,36 @@ class AuthControllerIntTest extends IntegrationTest {
         assertThat(response.getStatusCode()).isEqualTo(401);
     }
 
+    @Test
+    void loginUser_returns_400_for_invalid_request() {
+        // given
+        final LoginRequest request = LoginRequest.builder()
+                .email(null)
+                .password("   ")
+                .build();
+
+        // when
+        Response response = given()
+                .body(request)
+                .contentType(ContentType.JSON)
+                .when()
+                .post("/auth/login");
+
+        final ErrorResponse errorResponse = response.getBody().as(ErrorResponse.class);
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(400);
+        assertThat(errorResponse.getError()).isNotBlank();
+    }
+
     private User givenUserExists(final String email, final String password) {
         return userService.addUser(
                 AddUserRequest.builder()
                         .firstName("firstName")
                         .secondName("secondName")
                         .email(email)
-                        .password1(password)
-                        .password2(password)
+                        .password(password)
                         .build()
         );
     }
-
 }
