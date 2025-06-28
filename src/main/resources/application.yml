@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url: jdbc:mariadb://localhost:3306/blog_db
+    url: jdbc:mariadb://localhost:3306/recipe-book-db
     username: jim
     password: password
 
   flyway:
     user: jim
     password: password
-    url: jdbc:mariadb://localhost:3306/blog_db
+    url: jdbc:mariadb://localhost:3306/recipe-book-db
     locations: classpath:db.migration
 
 server:
