@@ -5,11 +5,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.recipes.auth.exception.UserValidationException;
+import org.recipes.commons.exception.NotFoundException;
+import org.recipes.commons.exception.UserValidationException;
 import org.recipes.auth.security.JwtHelper;
 import org.recipes.user.dto.AddUserRequest;
 import org.recipes.user.dto.UpdateUserRequest;
-import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.UserRepository;
 import org.recipes.user.repository.dto.UserEntityId;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,9 +25,21 @@ class UserServiceTest {
 
     private static final String INVALID_EMAIL_MESSAGE = "Invalid email address";
     private static final String EMAIL_ALREADY_IN_USE_MESSAGE = "Email address already in use";
+    private static final String EMAIL_ADDRESS = "test-email@email.com";
 
     @Mock UserRepository userRepository;
     @InjectMocks UserService userService;
+
+    @Test
+    void getUserByToken_throws_exception_for_unknown_user() {
+        // given
+        final String token = String.format("Bearer %s", JwtHelper.generateToken(EMAIL_ADDRESS));
+        when(userRepository.findUserByEmail(EMAIL_ADDRESS)).thenReturn(Optional.empty());
+        // then
+        assertThatThrownBy(() -> userService.getUserByToken(token))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("User not found");
+    }
 
     @Test
     void getUser_throws_exception_for_unknown_id() {
@@ -35,8 +47,8 @@ class UserServiceTest {
         when(userRepository.findById(1)).thenReturn(Optional.empty());
         // then
         assertThatThrownBy(() -> userService.getUser(1))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("User not found for ID: 1");
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("User not found");
     }
 
     @Test
@@ -82,13 +94,10 @@ class UserServiceTest {
     void addUser_throws_exception_if_email_already_in_use() {
         // given
         final var addUserRequest = AddUserRequest.builder()
-                .firstName("firstName")
-                .secondName("secondName")
-                .email("email@domain.com")
-                .password("password")
+                .email(EMAIL_ADDRESS)
                 .build();
 
-        when(userRepository.existsByEmail("email@domain.com")).thenReturn(true);
+        when(userRepository.existsByEmail(EMAIL_ADDRESS)).thenReturn(true);
 
         // when, then
         assertThatThrownBy(() -> userService.addUser(addUserRequest))
@@ -99,8 +108,8 @@ class UserServiceTest {
     @Test
     void getUserIdByToken_returns_user_id() {
         // given
-        final String token = String.format("Bearer %s", JwtHelper.generateToken("test-email@email.com"));
-        when(userRepository.findUserIdByEmail("test-email@email.com")).thenReturn(Optional.of(new UserEntityId(123)));
+        final String token = String.format("Bearer %s", JwtHelper.generateToken(EMAIL_ADDRESS));
+        when(userRepository.findUserIdByEmail(EMAIL_ADDRESS)).thenReturn(Optional.of(new UserEntityId(123)));
         // when, then
         assertThat(userService.getUserIdByToken(token)).isEqualTo(123);
     }
@@ -108,10 +117,10 @@ class UserServiceTest {
     @Test
     void getUserIdByToken_throws_exception_if_email_does_not_exist() {
         // given
-        final String token = String.format("Bearer %s", JwtHelper.generateToken("test-email@email.com"));
+        final String token = String.format("Bearer %s", JwtHelper.generateToken(EMAIL_ADDRESS));
         // when, then
         assertThatThrownBy(() -> userService.getUserIdByToken(token))
                 .isInstanceOf(UsernameNotFoundException.class)
-                .hasMessage("User not found with email: test-email@email.com");
+                .hasMessage("User not found with email: " + EMAIL_ADDRESS);
     }
 }

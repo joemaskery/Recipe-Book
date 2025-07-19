@@ -19,9 +19,15 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/get/{userId}")
-    public ResponseEntity<User> getUser(@PathVariable(value = "userId") final Integer userId) {
+    public ResponseEntity<User> getUserById(@PathVariable(value = "userId") final Integer userId) {
         LOG.info("[UserController] Received request to get user with ID: {}", userId);
         return ResponseEntity.ok(this.userService.getUser(userId));
+    }
+
+    @GetMapping("/get")
+    public ResponseEntity<User> getUser(@RequestHeader(name="Authorization") final String token) {
+        LOG.info("[UserController] Received request to get user details from auth token");
+        return ResponseEntity.ok(this.userService.getUserByToken(token));
     }
 
     @GetMapping("/get-all")
@@ -42,5 +48,4 @@ public class UserController {
         LOG.info("[UserController] Received request to update user {}", request.getUserId());
         return ResponseEntity.ok(this.userService.updateUser(request));
     }
-
 }

@@ -1,4 +1,4 @@
-package org.recipes.auth.exception;
+package org.recipes.commons.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +16,13 @@ public class GlobalExceptionHandler {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleUserValidationException(final UserValidationException exception) {
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse(exception.getMessage()));
+    }
+
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleNotFoundException(final NotFoundException exception) {
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(exception.getMessage()));
     }

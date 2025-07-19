@@ -4,7 +4,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.recipes.IntegrationTest;
-import org.recipes.auth.exception.ErrorResponse;
+import org.recipes.commons.exception.ErrorResponse;
 import org.recipes.user.dto.AddUserRequest;
 import org.recipes.auth.dto.LoginRequest;
 import org.recipes.auth.dto.LoginResponse;

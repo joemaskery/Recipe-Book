@@ -23,6 +23,7 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.recipes.testutils.UserHelper.USER_1;
 import static org.recipes.testutils.builder.AddRecipeRequestTestBuilder.addRecipeRequest;
 import static org.recipes.testutils.builder.RecipeIngredientTestBuilder.cheese;
 import static org.recipes.testutils.builder.RecipeIngredientTestBuilder.garlicBread;
@@ -35,7 +36,6 @@ class RecipeControllerIntTest extends IntegrationTest {
 
     private static final Integer USER_ID_1 = 1;
     private static final Integer RECIPE_ID_1 = 1;
-    private static final String USER_1_EMAIL = "email1@domain.com";
 
     @Autowired RecipeRepository recipeRepository;
     @Autowired RecipeIngredientRepository recipeIngredientRepository;
@@ -72,7 +72,7 @@ class RecipeControllerIntTest extends IntegrationTest {
     void getUserRecipes_returns_all_user_recipes() {
         // given
         recipeHelper.saveRecipes();
-        final String token = String.format("Bearer %s", JwtHelper.generateToken(USER_1_EMAIL));
+        final String token = String.format("Bearer %s", JwtHelper.generateToken(USER_1.getEmail()));
 
         // when
         Response response = given()
@@ -126,7 +126,7 @@ class RecipeControllerIntTest extends IntegrationTest {
         // given
         userHelper.saveUsers();
         ingredientHelper.saveIngredients();
-        final String token = String.format("Bearer %s", JwtHelper.generateToken(USER_1_EMAIL));
+        final String token = String.format("Bearer %s", JwtHelper.generateToken(USER_1.getEmail()));
 
         final AddRecipeRequest request = addRecipeRequest().build();
         // when
