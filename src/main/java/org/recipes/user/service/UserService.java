@@ -5,7 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
-import org.recipes.auth.exception.UserValidationException;
+import org.recipes.commons.exception.NotFoundException;
+import org.recipes.commons.exception.UserValidationException;
 import org.recipes.auth.security.JwtHelper;
 import org.recipes.user.dto.AddUserRequest;
 import org.recipes.user.dto.UpdateUserRequest;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @Service
 @Slf4j
@@ -29,15 +31,18 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
+    public User getUserByToken(final String token) {
+        LOG.trace("Attempting to retrieve user recipes by token: {}", token);
+        final String userEmail = JwtHelper.extractUsernameWithBearer(token);
+        LOG.trace("Extracted user email: {}", userEmail);
+
+        return mapOptionalEntityToUser(String.format("findUserByEmail(%s)", userEmail),
+                () -> userRepository.findUserByEmail(userEmail));
+    }
+
     public User getUser(final Integer userId) {
-        final Optional<UserEntity> userOptional = this.userRepository.findById(userId);
-        if (userOptional.isEmpty()) {
-            LOG.debug("[UserService] User not found with userId: {}", userId);
-            throw new IllegalStateException("User not found for ID: " + userId);
-        } else {
-            LOG.debug("[UserService] Found User with userId: {}", userId);
-            return mapToUser(userOptional.get());
-        }
+        return mapOptionalEntityToUser(String.format("findById(%s)", userId),
+                () -> userRepository.findById(userId));
     }
 
     public List<User> getAllUsers() {
@@ -89,6 +94,19 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + userEmail));
         LOG.trace("[UserService] Retrieved userId {} for email {}", userId, userEmail);
         return userId.userId();
+    }
+
+    private User mapOptionalEntityToUser(final String description, final Supplier<Optional<UserEntity>> function) {
+        final Optional<UserEntity> userEntityOptional = function.get();
+
+        if (userEntityOptional.isEmpty()) {
+            LOG.info("[UserService] User not found with supplier: {}", description);
+            throw new NotFoundException("User not found");
+
+        } else {
+            LOG.info("[UserService] Found User with supplier: {}", description);
+            return mapToUser(userEntityOptional.get());
+        }
     }
 
     private User mapToUser(final UserEntity userEntity) {

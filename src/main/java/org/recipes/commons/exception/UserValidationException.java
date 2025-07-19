@@ -1,4 +1,4 @@
-package org.recipes.auth.exception;
+package org.recipes.commons.exception;
 
 public class UserValidationException extends RuntimeException {
 
