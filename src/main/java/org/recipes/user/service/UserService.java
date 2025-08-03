@@ -11,6 +11,8 @@ import org.recipes.auth.security.JwtHelper;
 import org.recipes.user.dto.AddUserRequest;
 import org.recipes.user.dto.UpdateUserRequest;
 import org.recipes.user.dto.User;
+import org.recipes.user.dto.UserDetailsAndStats;
+import org.recipes.user.dto.UserStats;
 import org.recipes.user.dto.UserWithStats;
 import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.UserRepository;
@@ -37,8 +39,10 @@ public class UserService {
         final String userEmail = JwtHelper.extractUsernameWithBearer(token);
         LOG.trace("Extracted user email: {}", userEmail);
 
-        return userRepository.findUserWithStatsByEmail(userEmail)
+        final UserDetailsAndStats userDetails = userRepository.findUserWithStatsByEmail(userEmail)
                 .orElseThrow(() -> new NotFoundException("User not found"));
+
+        return toUserWithStats(userDetails);
     }
 
     public User getUser(final Integer userId) {
@@ -152,7 +156,7 @@ public class UserService {
         if (!EmailValidator.getInstance().isValid(email)) {
             validationErrors.add("Invalid email address");
 
-        } else if (emailAlreadyInUse(email)){
+        } else if (emailAlreadyInUse(email)) {
             validationErrors.add("Email address already in use");
         }
 
@@ -164,5 +168,19 @@ public class UserService {
 
     private boolean emailAlreadyInUse(final String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    private UserWithStats toUserWithStats(final UserDetailsAndStats userDetails) {
+        return UserWithStats.builder()
+                .userId(userDetails.getUserId())
+                .firstName(userDetails.getFirstName())
+                .secondName(userDetails.getSecondName())
+                .email(userDetails.getEmail())
+                .userStats(UserStats.builder()
+                        .dateJoined(userDetails.getDateJoined())
+                        .recipes(userDetails.getRecipes())
+                        .ingredients(userDetails.getIngredients())
+                        .build())
+                .build();
     }
 }

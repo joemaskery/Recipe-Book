@@ -6,7 +6,7 @@ import org.recipes.recipe.entity.RecipeEntity;
 import org.recipes.recipe.repository.IngredientReferenceRepository;
 import org.recipes.recipe.repository.RecipeIngredientRepository;
 import org.recipes.recipe.repository.RecipeRepository;
-import org.recipes.user.dto.UserWithStats;
+import org.recipes.user.dto.UserDetailsAndStats;
 import org.recipes.user.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -54,11 +54,11 @@ class UserRepositoryTest {
         recipeIngredientRepository.save(cheeseEntity(pizzaRecipe.getRecipeId(), cheeseRef.getReferenceId(), 300.0));
 
         // when
-        final Optional<UserWithStats> result = userRepository.findUserWithStatsByEmail(user.getEmail());
+        final Optional<UserDetailsAndStats> result = userRepository.findUserWithStatsByEmail(user.getEmail());
 
         // then
         assertThat(result).get()
-                .isEqualTo(UserWithStats.builder()
+                .isEqualTo(UserDetailsAndStats.builder()
                         .userId(user.getUserId())
                         .firstName(user.getFirstName())
                         .secondName(user.getSecondName())

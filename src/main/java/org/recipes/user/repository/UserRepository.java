@@ -1,6 +1,6 @@
 package org.recipes.user.repository;
 
-import org.recipes.user.dto.UserWithStats;
+import org.recipes.user.dto.UserDetailsAndStats;
 import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.dto.UserEntityId;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     boolean existsByEmail(String email);
 
     @Query("""
-            SELECT new org.recipes.user.dto.UserWithStats(
+            SELECT new org.recipes.user.dto.UserDetailsAndStats(
                 u.userId,
                 u.firstName,
                 u.secondName,
@@ -31,5 +31,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
             WHERE u.email = :email
             GROUP BY u.userId, u.firstName, u.secondName, u.email, u.createdDate
             """)
-    Optional<UserWithStats> findUserWithStatsByEmail(String email);
+    Optional<UserDetailsAndStats> findUserWithStatsByEmail(String email);
 }

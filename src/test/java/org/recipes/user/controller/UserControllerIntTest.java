@@ -9,6 +9,7 @@ import org.recipes.testutils.RecipeHelper;
 import org.recipes.testutils.UserHelper;
 import org.recipes.user.dto.UpdateUserRequest;
 import org.recipes.user.dto.User;
+import org.recipes.user.dto.UserStats;
 import org.recipes.user.dto.UserWithStats;
 import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.UserRepository;
@@ -22,9 +23,12 @@ import static org.recipes.testutils.UserHelper.USER_1;
 @ActiveProfiles("test")
 public class UserControllerIntTest extends IntegrationTest {
 
-    @Autowired UserRepository userRepository;
-    @Autowired UserHelper userHelper;
-    @Autowired RecipeHelper recipeHelper;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    UserHelper userHelper;
+    @Autowired
+    RecipeHelper recipeHelper;
 
     @Test
     void canGetAllUsers() {
@@ -51,9 +55,9 @@ public class UserControllerIntTest extends IntegrationTest {
 
         // when
         Response response = given()
-                    .headers("Authorization", token)
+                .headers("Authorization", token)
                 .when()
-                    .get("/user/get-with-stats");
+                .get("/user/get-with-stats");
         final UserWithStats userResponse = response.as(UserWithStats.class);
 
         // then
@@ -64,9 +68,11 @@ public class UserControllerIntTest extends IntegrationTest {
                 .firstName(user.getFirstName())
                 .secondName(user.getSecondName())
                 .email(user.getEmail())
-                .dateJoined(user.getCreatedDate())
-                .recipes(1L)
-                .ingredients(4L)
+                .userStats(UserStats.builder()
+                        .dateJoined(user.getCreatedDate())
+                        .recipes(1L)
+                        .ingredients(4L)
+                        .build())
                 .build());
     }
 
