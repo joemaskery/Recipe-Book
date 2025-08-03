@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.recipes.testutils.builder.RecipeIngredientTestBuilder.*;
-import static org.recipes.testutils.builder.RecipeTestBuilder.pizza;
-import static org.recipes.testutils.builder.RecipeTestBuilder.tomatoPastaEntity;
+import static org.recipes.testutils.builder.RecipeTestBuilder.pizzaRecipeEntity;
+import static org.recipes.testutils.builder.RecipeTestBuilder.tomatoPastaRecipeEntity;
 
 @Service
 public class RecipeHelper {
@@ -28,8 +28,8 @@ public class RecipeHelper {
                 .collect(Collectors.toMap(IngredientEntity::getName, IngredientEntity::getReferenceId));
 
         // save recipes
-        final Integer tomatoPastaId = recipeRepository.save(tomatoPastaEntity(1).build()).getRecipeId();
-        final Integer pizzaId = recipeRepository.save(pizza(2).build()).getRecipeId();
+        final Integer tomatoPastaId = recipeRepository.save(tomatoPastaRecipeEntity(1).build()).getRecipeId();
+        final Integer pizzaId = recipeRepository.save(pizzaRecipeEntity(2).build()).getRecipeId();
 
         // save recipe ingredients
         recipeIngredientRepository.saveAll(List.of(

@@ -24,10 +24,10 @@ public class UserController {
         return ResponseEntity.ok(this.userService.getUser(userId));
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<User> getUser(@RequestHeader(name="Authorization") final String token) {
-        LOG.info("[UserController] Received request to get user details from auth token");
-        return ResponseEntity.ok(this.userService.getUserByToken(token));
+    @GetMapping("/get-with-stats")
+    public ResponseEntity<UserWithStats> getUserWithStats(@RequestHeader(name="Authorization") final String token) {
+        LOG.info("[UserController] Received request to get user details and stats from auth token");
+        return ResponseEntity.ok(this.userService.getUserStatsByToken(token));
     }
 
     @GetMapping("/get-all")

@@ -53,6 +53,7 @@ class AuthControllerIntTest extends IntegrationTest {
         assertThat(savedUser.getFirstName()).isEqualTo("firstName");
         assertThat(savedUser.getSecondName()).isEqualTo("secondName");
         assertThat(savedUser.getPassword()).isNotBlank();
+        assertThat(savedUser.getCreatedDate()).isNotNull();
     }
 
     @Test

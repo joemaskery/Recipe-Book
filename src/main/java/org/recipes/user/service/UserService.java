@@ -11,6 +11,7 @@ import org.recipes.auth.security.JwtHelper;
 import org.recipes.user.dto.AddUserRequest;
 import org.recipes.user.dto.UpdateUserRequest;
 import org.recipes.user.dto.User;
+import org.recipes.user.dto.UserWithStats;
 import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.UserRepository;
 import org.recipes.user.repository.dto.UserEntityId;
@@ -31,13 +32,13 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
-    public User getUserByToken(final String token) {
+    public UserWithStats getUserStatsByToken(final String token) {
         LOG.trace("Attempting to retrieve user recipes by token: {}", token);
         final String userEmail = JwtHelper.extractUsernameWithBearer(token);
         LOG.trace("Extracted user email: {}", userEmail);
 
-        return mapOptionalEntityToUser(String.format("findUserByEmail(%s)", userEmail),
-                () -> userRepository.findUserByEmail(userEmail));
+        return userRepository.findUserWithStatsByEmail(userEmail)
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     public User getUser(final Integer userId) {

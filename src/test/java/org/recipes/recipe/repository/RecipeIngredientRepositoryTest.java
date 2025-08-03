@@ -15,7 +15,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.recipes.testutils.builder.IngredientTestBuilder.tomatoReference;
 import static org.recipes.testutils.builder.RecipeIngredientTestBuilder.tomatoEntity;
-import static org.recipes.testutils.builder.RecipeTestBuilder.tomatoPastaEntity;
+import static org.recipes.testutils.builder.RecipeTestBuilder.tomatoPastaRecipeEntity;
 import static org.recipes.testutils.builder.UserEntityTestBuilder.userEntity;
 
 @DataJpaTest(properties = {
@@ -33,7 +33,7 @@ class RecipeIngredientRepositoryTest {
     void findAllByRecipeIdIn_returns_expected_ingredient_summaries() {
         // given
         final UserEntity user = userRepository.save(userEntity().build());
-        final RecipeEntity recipe = recipeRepository.save(tomatoPastaEntity(user.getUserId()).build());
+        final RecipeEntity recipe = recipeRepository.save(tomatoPastaRecipeEntity(user.getUserId()).build());
         final IngredientEntity tomatoRef = ingredientReferenceRepository.save(tomatoReference());
 
         recipeIngredientRepository.save(tomatoEntity(recipe.getRecipeId(), tomatoRef.getReferenceId(), 3.0));

@@ -11,7 +11,8 @@ import org.recipes.recipe.model.QuantityType;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "recipe_ingredients")
+@Entity
+@Table(name = "recipe_ingredients")
 public class RecipeIngredientEntity {
 
     @Id

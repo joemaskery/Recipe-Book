@@ -1,0 +1,2 @@
+ALTER TABLE users
+    ADD created_date DATETIME;

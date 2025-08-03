@@ -5,9 +5,11 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.recipes.IntegrationTest;
 import org.recipes.auth.security.JwtHelper;
+import org.recipes.testutils.RecipeHelper;
 import org.recipes.testutils.UserHelper;
 import org.recipes.user.dto.UpdateUserRequest;
 import org.recipes.user.dto.User;
+import org.recipes.user.dto.UserWithStats;
 import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ public class UserControllerIntTest extends IntegrationTest {
 
     @Autowired UserRepository userRepository;
     @Autowired UserHelper userHelper;
+    @Autowired RecipeHelper recipeHelper;
 
     @Test
     void canGetAllUsers() {
@@ -40,24 +43,30 @@ public class UserControllerIntTest extends IntegrationTest {
     }
 
     @Test
-    void getUser_returns_user_details_for_valid_token() {
+    void getUserWithStats_returns_user_details_for_valid_token() {
         // given
-        userHelper.saveUsers();
+        recipeHelper.saveRecipes();
+
         final String token = String.format("Bearer %s", JwtHelper.generateToken(USER_1.getEmail()));
 
         // when
         Response response = given()
                     .headers("Authorization", token)
                 .when()
-                    .get("/user/get");
-        final User userResponse = response.as(User.class);
+                    .get("/user/get-with-stats");
+        final UserWithStats userResponse = response.as(UserWithStats.class);
 
         // then
-        assertThat(userResponse).isEqualTo(User.builder()
-                .userId(1)
-                .firstName(USER_1.getFirstName())
-                .secondName(USER_1.getSecondName())
-                .email(USER_1.getEmail())
+        final UserEntity user = userRepository.findById(USER_1.getUserId()).get();
+
+        assertThat(userResponse).isEqualTo(UserWithStats.builder()
+                .userId(user.getUserId())
+                .firstName(user.getFirstName())
+                .secondName(user.getSecondName())
+                .email(user.getEmail())
+                .dateJoined(user.getCreatedDate())
+                .recipes(1L)
+                .ingredients(4L)
                 .build());
     }
 
@@ -115,7 +124,8 @@ public class UserControllerIntTest extends IntegrationTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(200);
-        assertThat(userRepository.findById(1).get()).usingRecursiveComparison().ignoringFields("recipes")
+        assertThat(userRepository.findById(1).get()).usingRecursiveComparison()
+                .ignoringFields("recipes", "createdDate")
                 .isEqualTo(updatedUser);
     }
 }
