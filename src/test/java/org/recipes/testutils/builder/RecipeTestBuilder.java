@@ -8,7 +8,7 @@ import org.recipes.recipe.entity.RecipeEntity.RecipeEntityBuilder;
 
 public class RecipeTestBuilder {
 
-    public static RecipeEntityBuilder tomatoPastaEntity(final Integer userId) {
+    public static RecipeEntityBuilder tomatoPastaRecipeEntity(final Integer userId) {
         return RecipeEntity.builder()
                 .userId(userId)
                 .name("Tomato Pasta")
@@ -25,7 +25,7 @@ public class RecipeTestBuilder {
                 .weblink("www.recipes-here.com");
     }
 
-    public static RecipeEntityBuilder pizza(final Integer userId) {
+    public static RecipeEntityBuilder pizzaRecipeEntity(final Integer userId) {
         return RecipeEntity.builder()
                 .userId(userId)
                 .name("Margherita Pizza")

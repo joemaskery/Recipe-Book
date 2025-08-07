@@ -31,12 +31,12 @@ class UserServiceTest {
     @InjectMocks UserService userService;
 
     @Test
-    void getUserByToken_throws_exception_for_unknown_user() {
+    void getUserStatsByToken_throws_exception_for_unknown_user() {
         // given
         final String token = String.format("Bearer %s", JwtHelper.generateToken(EMAIL_ADDRESS));
-        when(userRepository.findUserByEmail(EMAIL_ADDRESS)).thenReturn(Optional.empty());
+        when(userRepository.findUserWithStatsByEmail(EMAIL_ADDRESS)).thenReturn(Optional.empty());
         // then
-        assertThatThrownBy(() -> userService.getUserByToken(token))
+        assertThatThrownBy(() -> userService.getUserStatsByToken(token))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("User not found");
     }
