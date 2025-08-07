@@ -69,7 +69,7 @@ public class UserControllerIntTest extends IntegrationTest {
                 .secondName(user.getSecondName())
                 .email(user.getEmail())
                 .stats(UserStats.builder()
-                        .dateJoined(user.getCreatedDate())
+                        .dateJoined(user.getCreatedDate().toLocalDate())
                         .recipes(1L)
                         .ingredients(4L)
                         .build())
