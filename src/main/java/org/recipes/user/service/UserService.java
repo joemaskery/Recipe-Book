@@ -176,8 +176,9 @@ public class UserService {
                 .firstName(userDetails.getFirstName())
                 .secondName(userDetails.getSecondName())
                 .email(userDetails.getEmail())
-                .userStats(UserStats.builder()
-                        .dateJoined(userDetails.getDateJoined())
+                .stats(UserStats.builder()
+                        .dateJoined(userDetails.getDateJoined() == null ? null :
+                                userDetails.getDateJoined().toLocalDate())
                         .recipes(userDetails.getRecipes())
                         .ingredients(userDetails.getIngredients())
                         .build())
