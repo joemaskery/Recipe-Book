@@ -17,6 +17,7 @@ public class UserDetailsAndStats {
     private String firstName;
     private String secondName;
     private String email;
+    private String avatar;
     private LocalDateTime dateJoined;
     private Long recipes;
     private Long ingredients;

@@ -120,6 +120,7 @@ public class UserService {
                 .firstName(userEntity.getFirstName())
                 .secondName(userEntity.getSecondName())
                 .email(userEntity.getEmail())
+                .avatar(userEntity.getAvatar())
                 .build();
     }
 
@@ -146,6 +147,7 @@ public class UserService {
                 .secondName(request.getSecondName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .avatar(request.getAvatar())
                 .build());
     }
 
@@ -176,6 +178,7 @@ public class UserService {
                 .firstName(userDetails.getFirstName())
                 .secondName(userDetails.getSecondName())
                 .email(userDetails.getEmail())
+                .avatar(userDetails.getAvatar())
                 .stats(UserStats.builder()
                         .dateJoined(userDetails.getDateJoined() == null ? null :
                                 userDetails.getDateJoined().toLocalDate())

@@ -42,6 +42,7 @@ public class UserEntity extends Auditable implements UserDetails {
     @Column(unique = true)
     private String email;
     private String password;
+    private String avatar;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -19,4 +19,7 @@ public class AddUserRequest {
 
     @NotBlank(message = "Password must not be blank")
     private final String password;
+
+    @NotBlank(message = "Avatar must not be blank")
+    private final String avatar;
 }
