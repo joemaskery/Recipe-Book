@@ -15,5 +15,6 @@ public class UserWithStats {
     private String firstName;
     private String secondName;
     private String email;
+    private String avatar;
     private UserStats stats;
 }

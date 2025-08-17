@@ -34,6 +34,7 @@ class AuthControllerIntTest extends IntegrationTest {
                 .secondName("secondName")
                 .email("test@email.com")
                 .password("a-password")
+                .avatar("selected_avatar")
                 .build();
 
         // when
@@ -53,6 +54,7 @@ class AuthControllerIntTest extends IntegrationTest {
         assertThat(savedUser.getFirstName()).isEqualTo("firstName");
         assertThat(savedUser.getSecondName()).isEqualTo("secondName");
         assertThat(savedUser.getPassword()).isNotBlank();
+        assertThat(savedUser.getAvatar()).isEqualTo("selected_avatar");
         assertThat(savedUser.getCreatedDate()).isNotNull();
     }
 
@@ -64,6 +66,7 @@ class AuthControllerIntTest extends IntegrationTest {
                 .secondName("   ")
                 .email(null)
                 .password("       ")
+                .avatar(null)
                 .build();
 
         // when

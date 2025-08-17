@@ -68,6 +68,7 @@ public class UserControllerIntTest extends IntegrationTest {
                 .firstName(user.getFirstName())
                 .secondName(user.getSecondName())
                 .email(user.getEmail())
+                .avatar(user.getAvatar())
                 .stats(UserStats.builder()
                         .dateJoined(user.getCreatedDate().toLocalDate())
                         .recipes(1L)
@@ -85,8 +86,7 @@ public class UserControllerIntTest extends IntegrationTest {
         // then
         assertThat(response.getStatusCode()).isEqualTo(200);
         assertThat(response.getBody().as(User.class))
-                .extracting("userId", "firstName", "secondName", "email")
-                .containsExactly(2, "name2", "surname2", "email2@domain.com");
+                .isEqualTo(new User(2, "name2", "surname2", "email2@domain.com", "avatar_2"));
     }
 
     @Test
@@ -109,16 +109,17 @@ public class UserControllerIntTest extends IntegrationTest {
         userHelper.saveUsers();
 
         UpdateUserRequest request = UpdateUserRequest.builder()
-                .userId(1)
+                .userId(USER_1.getUserId())
                 .firstName("newFirstName")
                 .secondName("newSecondName")
                 .email("newemail@domain.com")
                 .build();
         UserEntity updatedUser = UserEntity.builder()
-                .userId(1)
+                .userId(USER_1.getUserId())
                 .firstName("newFirstName")
                 .secondName("newSecondName")
                 .email("newemail@domain.com")
+                .avatar(USER_1.getAvatar())
                 .build();
 
         // when

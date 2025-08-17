@@ -22,6 +22,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
                 u.firstName,
                 u.secondName,
                 u.email,
+                u.avatar,
                 u.createdDate,
                 COUNT(DISTINCT r.recipeId),
                 COUNT(DISTINCT i.ingredientRefId))

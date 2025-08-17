@@ -14,12 +14,14 @@ public class UserHelper {
             .firstName("name1")
             .secondName("surname1")
             .email("email1@domain.com")
+            .avatar("avatar_1")
             .build();
 
     public static final UserEntity USER_2 = UserEntity.builder()
             .firstName("name2")
             .secondName("surname2")
             .email("email2@domain.com")
+            .avatar("avatar_2")
             .build();
 
     @Autowired UserRepository userRepository;
