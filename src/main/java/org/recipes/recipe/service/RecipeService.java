@@ -99,6 +99,7 @@ public class RecipeService {
                 .name(recipe.getName())
                 .description(recipe.getDescription())
                 .weblink(recipe.getWeblink())
+                .createdDate(recipe.getCreatedDate() == null ? null : recipe.getCreatedDate().toLocalDate())
                 .ingredients(toRecipeIngredients(recipe.getRecipeIngredients()))
                 .build();
     }
