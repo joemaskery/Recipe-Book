@@ -54,11 +54,13 @@ class RecipeControllerIntTest extends IntegrationTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(200);
-        assertThat(recipes.length).isEqualTo(1);
 
-        assertThat(recipes[0]).usingRecursiveComparison()
-                .ignoringFields("ingredients")
+        assertThat(recipes).singleElement()
+                .usingRecursiveComparison()
+                .ignoringFields("ingredients", "createdDate")
                 .isEqualTo(tomatoPastaRecipe(RECIPE_ID_1, USER_ID_1).build());
+
+        assertThat(recipes[0].getCreatedDate()).isNotNull();
 
         assertThat(recipes[0].getIngredients()).containsExactlyInAnyOrder(
                 tomato(1.0).build(),
@@ -82,11 +84,13 @@ class RecipeControllerIntTest extends IntegrationTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(200);
-        assertThat(recipes.length).isEqualTo(1);
 
-        assertThat(recipes[0]).usingRecursiveComparison()
-                .ignoringFields("ingredients")
+        assertThat(recipes).singleElement()
+                .usingRecursiveComparison()
+                .ignoringFields("ingredients", "createdDate")
                 .isEqualTo(tomatoPastaRecipe(RECIPE_ID_1, USER_ID_1).build());
+
+        assertThat(recipes[0].getCreatedDate()).isNotNull();
 
         assertThat(recipes[0].getIngredients()).containsExactlyInAnyOrder(
                 tomato(1.0).build(),
@@ -110,8 +114,10 @@ class RecipeControllerIntTest extends IntegrationTest {
         assertThat(response.getStatusCode()).isEqualTo(200);
 
         assertThat(recipe).usingRecursiveComparison()
-                .ignoringFields("ingredients")
+                .ignoringFields("ingredients", "createdDate")
                 .isEqualTo(tomatoPastaRecipe(RECIPE_ID_1, USER_ID_1).build());
+
+        assertThat(recipe.getCreatedDate()).isNotNull();
 
         assertThat(recipe.getIngredients()).containsExactlyInAnyOrder(
                 tomato(1.0).build(),
@@ -139,7 +145,8 @@ class RecipeControllerIntTest extends IntegrationTest {
         // then
         final RecipeEntity recipeEntity = recipeRepository.findById(recipeResponse.getRecipeId()).get();
 
-        assertThat(recipeEntity).usingRecursiveComparison().ignoringFields("recipeIngredients")
+        assertThat(recipeEntity).usingRecursiveComparison()
+                .ignoringFields("recipeIngredients", "createdDate")
                 .isEqualTo(RecipeEntity.builder()
                         .userId(USER_ID_1)
                         .recipeId(recipeResponse.getRecipeId())
@@ -148,6 +155,8 @@ class RecipeControllerIntTest extends IntegrationTest {
                         .weblink(request.getWeblink())
                         .build()
                 );
+
+        assertThat(recipeEntity.getCreatedDate()).isNotNull();
 
         final List<RecipeIngredientEntity> recipeIngredientEntities = recipeIngredientRepository.findAllByRecipeId(recipeResponse.getRecipeId());
 
