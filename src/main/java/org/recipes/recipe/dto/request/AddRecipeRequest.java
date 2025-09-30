@@ -14,5 +14,4 @@ public class AddRecipeRequest {
     private final String instructions;
     private final String weblink;
     private final List<IngredientInput> ingredients;
-
 }

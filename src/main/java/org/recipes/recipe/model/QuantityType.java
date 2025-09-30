@@ -11,9 +11,10 @@ public enum QuantityType {
     GRAM("grams", "g"),
     KILOGRAM("kilograms", "kg"),
     MILLILITRES("millilitres", "mL"),
-    LITRES("litres", "L");
+    LITRES("litres", "L"),
+    TSP("tsp", "tsp"),
+    TBSP("tbsp", "tbsp");
 
     private final String name;
     private final String unit;
-
 }

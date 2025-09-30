@@ -2,13 +2,17 @@ package org.recipes.recipe.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.recipes.commons.model.KeyValue;
 import org.recipes.recipe.dto.request.AddIngredientRequest;
 import org.recipes.recipe.dto.response.ReferenceIngredient;
+import org.recipes.recipe.dto.response.ReferenceIngredientsResponse;
 import org.recipes.recipe.entity.IngredientEntity;
+import org.recipes.recipe.model.QuantityType;
 import org.recipes.recipe.repository.IngredientReferenceRepository;
 import org.recipes.user.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -26,12 +30,24 @@ public class IngredientReferenceService {
         return toReferenceIngredient(savedIngredient);
     }
 
-    public List<ReferenceIngredient> getAllForUser(final String userToken) {
+    public ReferenceIngredientsResponse getAllForUser(final String userToken) {
         final Integer userId = userService.getUserIdByToken(userToken);
         final List<IngredientEntity> ingredientEntities = ingredientRepository
                 .findAllByUserIdEqualsOrAllUsersIsTrue(userId);
         LOG.debug("Found {} ingredients for user {}", ingredientEntities.size(), userId);
-        return toReferenceIngredients(ingredientEntities);
+
+        final List<ReferenceIngredient> refIngredients = toReferenceIngredients(ingredientEntities);
+
+        return ReferenceIngredientsResponse.builder()
+                .quantityTypes(getQuantityTypes())
+                .referenceIngredients(refIngredients)
+                .build();
+    }
+
+    private List<KeyValue> getQuantityTypes() {
+        return Arrays.stream(QuantityType.values())
+                .map(type -> new KeyValue(type.name(), type.getName()))
+                .toList();
     }
 
     private ReferenceIngredient toReferenceIngredient(final IngredientEntity entity) {
