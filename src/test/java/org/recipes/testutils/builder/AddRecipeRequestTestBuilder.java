@@ -13,6 +13,7 @@ public class AddRecipeRequestTestBuilder {
         return AddRecipeRequest.builder()
                 .name("recipe-name")
                 .description("recipe-description")
+                .instructions("here are some recipe instructions")
                 .weblink("www.recipe-book.com")
                 .ingredients(List.of(
                         ingredientInput(1, 100.00, QuantityType.GRAM),
