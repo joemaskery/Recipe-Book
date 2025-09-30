@@ -152,6 +152,7 @@ class RecipeControllerIntTest extends IntegrationTest {
                         .recipeId(recipeResponse.getRecipeId())
                         .name(request.getName())
                         .description(request.getDescription())
+                        .instructions(request.getInstructions())
                         .weblink(request.getWeblink())
                         .build()
                 );

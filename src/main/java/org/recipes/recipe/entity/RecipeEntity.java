@@ -32,6 +32,7 @@ public class RecipeEntity extends Auditable {
     private Integer userId;
     private String name;
     private String description;
+    private String instructions;
     @Column(name = "link")
     private String weblink;
 

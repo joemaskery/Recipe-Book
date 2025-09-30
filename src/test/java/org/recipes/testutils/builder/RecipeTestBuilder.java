@@ -13,6 +13,7 @@ public class RecipeTestBuilder {
                 .userId(userId)
                 .name("Tomato Pasta")
                 .description("GOATED tomato pasta recipe")
+                .instructions("Instructions for tomato pasta recipe")
                 .weblink("www.recipes-here.com");
     }
 
@@ -22,6 +23,7 @@ public class RecipeTestBuilder {
                 .userId(userId)
                 .name("Tomato Pasta")
                 .description("GOATED tomato pasta recipe")
+                .instructions("Instructions for tomato pasta recipe")
                 .weblink("www.recipes-here.com");
     }
 

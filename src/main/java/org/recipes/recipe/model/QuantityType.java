@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum QuantityType {
 
-    ITEMS(null, null),
+    ITEMS("items", null),
     GRAM("grams", "g"),
     KILOGRAM("kilograms", "kg"),
     MILLILITRES("millilitres", "mL"),
