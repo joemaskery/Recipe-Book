@@ -1,6 +1,7 @@
 package org.recipes.recipe.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.recipes.auth.security.JwtHelper;
@@ -49,6 +50,7 @@ public class RecipeService {
         return mapToUserRecipe(recipeEntity);
     }
 
+    @Transactional
     public UserRecipe addRecipe(final String token, final AddRecipeRequest request) {
         final Integer userId = userService.getUserIdByToken(token);
         LOG.info("[RecipeService] Saving recipe {} for user {}", request.getName(), userId);

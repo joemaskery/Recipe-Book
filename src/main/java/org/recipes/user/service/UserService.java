@@ -57,6 +57,7 @@ public class UserService {
                 .toList();
     }
 
+    @Transactional
     public User addUser(final AddUserRequest request) {
         validateNewEmailIsValid(request.getEmail());
         LOG.debug("[UserService] Saving user: {}", request);
@@ -64,6 +65,7 @@ public class UserService {
         return mapToUser(savedUser);
     }
 
+    @Transactional
     public void deleteUser(final Integer userId) {
         final Optional<UserEntity> userOptional = this.userRepository.findById(userId);
         if (userOptional.isEmpty()) {
