@@ -5,9 +5,12 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.recipes.IntegrationTest;
 import org.recipes.auth.security.JwtHelper;
+import org.recipes.commons.model.KeyValue;
 import org.recipes.recipe.dto.request.AddIngredientRequest;
 import org.recipes.recipe.dto.response.ReferenceIngredient;
+import org.recipes.recipe.dto.response.ReferenceIngredientsResponse;
 import org.recipes.recipe.entity.IngredientEntity;
+import org.recipes.recipe.model.QuantityType;
 import org.recipes.recipe.repository.IngredientReferenceRepository;
 import org.recipes.testutils.UserHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +45,20 @@ class IngredientReferenceControllerIntTest extends IntegrationTest {
         Response response = given()
                 .header("Authorization", token)
                 .get("/ingredient/get-for-user");
-        final ReferenceIngredient[] recipes = response.getBody().as(ReferenceIngredient[].class);
+        final ReferenceIngredientsResponse recipes = response.getBody().as(ReferenceIngredientsResponse.class);
 
         // then
-        assertThat(recipes).containsExactlyInAnyOrder(
+        assertThat(recipes.getQuantityTypes()).containsExactlyInAnyOrder(
+                new KeyValue(QuantityType.ITEMS.name(), "items"),
+                new KeyValue(QuantityType.GRAM.name(), "grams"),
+                new KeyValue(QuantityType.KILOGRAM.name(), "kilograms"),
+                new KeyValue(QuantityType.MILLILITRES.name(), "millilitres"),
+                new KeyValue(QuantityType.LITRES.name(), "litres"),
+                new KeyValue(QuantityType.TSP.name(), "tsp"),
+                new KeyValue(QuantityType.TBSP.name(), "tbsp")
+        );
+
+        assertThat(recipes.getReferenceIngredients()).containsExactlyInAnyOrder(
                 new ReferenceIngredient(1, "Egg", "Protein", false),
                 new ReferenceIngredient(3, "Pepper", "Vegetable", true)
         );
