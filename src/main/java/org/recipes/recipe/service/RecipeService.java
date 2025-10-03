@@ -115,7 +115,8 @@ public class RecipeService {
                         .category(ingredient.getCategory())
                         .quantity(ingredient.getQuantity())
                         .quantityType(ingredient.getQuantityType())
-                        .quantityName(ingredient.getQuantityType().getName())
+                        .quantityName(ingredient.getQuantityType() == null ? null :
+                                ingredient.getQuantityType().getName())
                         .build())
                 .toList();
     }
