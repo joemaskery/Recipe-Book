@@ -4,17 +4,15 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.recipes.IntegrationTest;
-import org.recipes.commons.exception.ErrorResponse;
-import org.recipes.user.dto.AddUserRequest;
 import org.recipes.auth.dto.LoginRequest;
 import org.recipes.auth.dto.LoginResponse;
+import org.recipes.commons.exception.ErrorResponse;
+import org.recipes.user.dto.AddUserRequest;
 import org.recipes.user.dto.User;
 import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.UserRepository;
 import org.recipes.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
