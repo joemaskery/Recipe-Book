@@ -14,6 +14,8 @@ import org.recipes.user.repository.UserRepository;
 import org.recipes.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -80,7 +82,12 @@ class AuthControllerIntTest extends IntegrationTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(400);
-        assertThat(errorResponse.getError()).isNotBlank();
+        assertThat(errorResponse.getErrors())
+                .containsExactlyInAnyOrder("First Name must not be blank",
+                        "Second Name must not be blank",
+                        "Email must not be blank",
+                        "Password must not be blank",
+                        "Avatar must not be blank");
     }
 
     @Test
@@ -167,7 +174,8 @@ class AuthControllerIntTest extends IntegrationTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(400);
-        assertThat(errorResponse.getError()).isNotBlank();
+        assertThat(errorResponse.getErrors())
+                .containsExactlyInAnyOrder("Email must not be blank", "Password must not be blank");
     }
 
     private User givenUserExists(final String email, final String password) {

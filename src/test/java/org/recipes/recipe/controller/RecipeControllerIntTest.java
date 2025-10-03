@@ -4,9 +4,14 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.recipes.IntegrationTest;
 import org.recipes.auth.security.JwtHelper;
+import org.recipes.commons.exception.ErrorResponse;
 import org.recipes.recipe.dto.request.AddRecipeRequest;
+import org.recipes.recipe.dto.request.IngredientInput;
 import org.recipes.recipe.dto.response.UserRecipe;
 import org.recipes.recipe.entity.RecipeEntity;
 import org.recipes.recipe.entity.RecipeIngredientEntity;
@@ -20,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -168,4 +174,42 @@ class RecipeControllerIntTest extends IntegrationTest {
                         Tuple.tuple("Cheddar Cheese", 300.0, QuantityType.MILLILITRES));
     }
 
+    @ParameterizedTest
+    @MethodSource("addRecipeRequestsAndErrorMessages")
+    void addRecipe_validates_recipe_request(final AddRecipeRequest request, final List<String> errorMessages) {
+        // given
+        userHelper.saveUsers();
+        ingredientHelper.saveIngredients();
+        final String token = String.format("Bearer %s", JwtHelper.generateToken(USER_1.getEmail()));
+
+        // when
+        final Response response = given()
+                .header("Authorization", token)
+                .body(request)
+                .contentType(ContentType.JSON)
+                .post("/recipe/add");
+        final ErrorResponse error = response.as(ErrorResponse.class);
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(400);
+
+        assertThat(error.getErrors()).containsExactlyInAnyOrderElementsOf(errorMessages);
+    }
+
+    private static Stream<Arguments> addRecipeRequestsAndErrorMessages() {
+        return Stream.of(
+                Arguments.of(
+                        addRecipeRequest().name("     ").description("").build(),
+                        List.of("Recipe name must not be blank", "Recipe description must not be blank")),
+
+                Arguments.of(
+                        addRecipeRequest().ingredients(List.of()).build(),
+                        List.of("Recipe must have at least one ingredient")),
+
+                Arguments.of(
+                        addRecipeRequest().ingredients(List.of(new IngredientInput(null, null, null))).build(),
+                        List.of("Ingredient reference ID must be defined", "Ingredient quantity must be defined",
+                                "Ingredient quantity type must be defined"))
+        );
+    }
 }

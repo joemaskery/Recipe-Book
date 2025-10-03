@@ -17,14 +17,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleUserValidationException(final UserValidationException exception) {
         return ResponseEntity.badRequest()
-                .body(new ErrorResponse(exception.getMessage()));
+                .body(new ErrorResponse(List.of(exception.getMessage())));
     }
 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleNotFoundException(final NotFoundException exception) {
         return ResponseEntity.badRequest()
-                .body(new ErrorResponse(exception.getMessage()));
+                .body(new ErrorResponse(List.of(exception.getMessage())));
     }
 
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
@@ -35,6 +35,6 @@ public class GlobalExceptionHandler {
                 .toList();
 
         return ResponseEntity.badRequest()
-                .body(new ErrorResponse(errorMessages.toString()));
+                .body(new ErrorResponse(errorMessages));
     }
 }
