@@ -4,10 +4,10 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.recipes.IntegrationTest;
-import org.recipes.commons.exception.ErrorResponse;
-import org.recipes.user.dto.AddUserRequest;
 import org.recipes.auth.dto.LoginRequest;
 import org.recipes.auth.dto.LoginResponse;
+import org.recipes.commons.exception.ErrorResponse;
+import org.recipes.user.dto.AddUserRequest;
 import org.recipes.user.dto.User;
 import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.UserRepository;
@@ -80,7 +80,12 @@ class AuthControllerIntTest extends IntegrationTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(400);
-        assertThat(errorResponse.getError()).isNotBlank();
+        assertThat(errorResponse.getErrors())
+                .containsExactlyInAnyOrder("First Name must not be blank",
+                        "Second Name must not be blank",
+                        "Email must not be blank",
+                        "Password must not be blank",
+                        "Avatar must not be blank");
     }
 
     @Test
@@ -167,7 +172,8 @@ class AuthControllerIntTest extends IntegrationTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(400);
-        assertThat(errorResponse.getError()).isNotBlank();
+        assertThat(errorResponse.getErrors())
+                .containsExactlyInAnyOrder("Email must not be blank", "Password must not be blank");
     }
 
     private User givenUserExists(final String email, final String password) {
