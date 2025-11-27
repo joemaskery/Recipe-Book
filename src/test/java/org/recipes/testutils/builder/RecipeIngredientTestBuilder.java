@@ -3,7 +3,7 @@ package org.recipes.testutils.builder;
 import org.recipes.recipe.dto.response.RecipeIngredient;
 import org.recipes.recipe.dto.response.RecipeIngredient.RecipeIngredientBuilder;
 import org.recipes.recipe.entity.RecipeIngredientEntity;
-import org.recipes.recipe.model.QuantityType;
+import org.recipes.commons.model.QuantityType;
 
 public class RecipeIngredientTestBuilder {
 

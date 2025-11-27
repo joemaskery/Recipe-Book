@@ -15,7 +15,7 @@ import org.recipes.recipe.dto.request.IngredientInput;
 import org.recipes.recipe.dto.response.UserRecipe;
 import org.recipes.recipe.entity.RecipeEntity;
 import org.recipes.recipe.entity.RecipeIngredientEntity;
-import org.recipes.recipe.model.QuantityType;
+import org.recipes.commons.model.QuantityType;
 import org.recipes.recipe.repository.RecipeIngredientRepository;
 import org.recipes.recipe.repository.RecipeRepository;
 import org.recipes.testutils.IngredientHelper;

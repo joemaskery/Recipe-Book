@@ -1,4 +1,4 @@
-package org.recipes.recipe.dto.response;
+package org.recipes.shopping.list.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +11,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShoppingList {
+public class BuildShoppingListRequest {
 
-    List<ShoppingListItem> items;
-
+    private List<Integer> recipeIds;
 }

@@ -1,9 +1,9 @@
 package org.recipes.recipe.repository;
 
 import org.junit.jupiter.api.Test;
+import org.recipes.commons.model.QuantityType;
 import org.recipes.recipe.entity.IngredientEntity;
 import org.recipes.recipe.entity.RecipeEntity;
-import org.recipes.recipe.model.QuantityType;
 import org.recipes.recipe.repository.dao.IngredientSummary;
 import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.UserRepository;
