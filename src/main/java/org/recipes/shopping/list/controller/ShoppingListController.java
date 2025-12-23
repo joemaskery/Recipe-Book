@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.recipes.shopping.list.dto.request.BuildShoppingListRequest;
 import org.recipes.shopping.list.dto.request.SaveShoppingListRequest;
+import org.recipes.shopping.list.dto.response.SavedShoppingListSummary;
 import org.recipes.shopping.list.dto.response.ShoppingListSummary;
 import org.recipes.shopping.list.service.ShoppingListService;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class ShoppingListController {
             consumes = {"application/json"},
             produces = {"application/json"}
     )
-    public ResponseEntity<ShoppingListSummary> saveShoppingList(@RequestBody final SaveShoppingListRequest request) {
+    public ResponseEntity<SavedShoppingListSummary> saveShoppingList(@RequestBody final SaveShoppingListRequest request) {
         LOG.info("Received request to save a shopping list: [{}]", request.getName());
         return ResponseEntity.ok(shoppingListService.saveShoppingList(request));
     }

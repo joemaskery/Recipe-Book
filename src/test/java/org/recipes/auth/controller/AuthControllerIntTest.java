@@ -3,7 +3,7 @@ package org.recipes.auth.controller;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
-import org.recipes.IntegrationTest;
+import org.recipes.MariaDbIntegrationTest;
 import org.recipes.auth.dto.LoginRequest;
 import org.recipes.auth.dto.LoginResponse;
 import org.recipes.commons.exception.ErrorResponse;
@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AuthControllerIntTest extends IntegrationTest {
+class AuthControllerIntTest extends MariaDbIntegrationTest {
 
     private static final String USER_EMAIL = "user-email@email.com";
     private static final String USER_PASSWORD = "user-password";

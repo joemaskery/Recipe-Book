@@ -7,6 +7,7 @@ import org.recipes.recipe.repository.dao.IngredientSummary;
 import org.recipes.recipe.service.RecipeIngredientService;
 import org.recipes.shopping.list.dto.request.BuildShoppingListRequest;
 import org.recipes.shopping.list.dto.request.SaveShoppingListRequest;
+import org.recipes.shopping.list.dto.response.SavedShoppingListSummary;
 import org.recipes.shopping.list.dto.response.ShoppingListSummary;
 import org.recipes.shopping.list.entity.ShoppingList;
 import org.recipes.shopping.list.entity.ShoppingListItem;
@@ -38,6 +39,7 @@ public class ShoppingListService {
         if (CollectionUtils.isEmpty(ingredients)) {
             LOG.warn("Can't build shopping list - no ingredients found under request: {}", request);
             return ShoppingListSummary.builder()
+                    .name(getShoppingListName())
                     .items(List.of())
                     .build();
         }
@@ -74,13 +76,16 @@ public class ShoppingListService {
         return shoppingList;
     }
 
-    public ShoppingListSummary saveShoppingList(final SaveShoppingListRequest request) {
+    public SavedShoppingListSummary saveShoppingList(final SaveShoppingListRequest request) {
         LOG.trace("Saving shopping list: {}", request);
         final ShoppingList shoppingList = mapToShoppingList(request);
         final ShoppingList savedShoppingList = shoppingListRepository.save(shoppingList);
         LOG.info("Saved shopping list: Name=[{}], ID=[{}]", savedShoppingList.getName(), savedShoppingList.getId());
 
-        return mapToShoppingListSummary(savedShoppingList);
+        return new SavedShoppingListSummary(
+                savedShoppingList.getId(),
+                mapToShoppingListSummary(savedShoppingList)
+        );
     }
 
     private ShoppingList mapToShoppingList(final SaveShoppingListRequest request) {

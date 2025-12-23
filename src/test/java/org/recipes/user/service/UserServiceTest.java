@@ -33,7 +33,7 @@ class UserServiceTest {
     @Test
     void getUserStatsByToken_throws_exception_for_unknown_user() {
         // given
-        final String token = String.format("Bearer %s", JwtHelper.generateToken(EMAIL_ADDRESS));
+        final String token = JwtHelper.generateTokenWithBearerPrefix(EMAIL_ADDRESS);
         when(userRepository.findUserWithStatsByEmail(EMAIL_ADDRESS)).thenReturn(Optional.empty());
         // then
         assertThatThrownBy(() -> userService.getUserStatsByToken(token))
@@ -108,7 +108,7 @@ class UserServiceTest {
     @Test
     void getUserIdByToken_returns_user_id() {
         // given
-        final String token = String.format("Bearer %s", JwtHelper.generateToken(EMAIL_ADDRESS));
+        final String token = JwtHelper.generateTokenWithBearerPrefix(EMAIL_ADDRESS);
         when(userRepository.findUserIdByEmail(EMAIL_ADDRESS)).thenReturn(Optional.of(new UserEntityId(123)));
         // when, then
         assertThat(userService.getUserIdByToken(token)).isEqualTo(123);
@@ -117,7 +117,7 @@ class UserServiceTest {
     @Test
     void getUserIdByToken_throws_exception_if_email_does_not_exist() {
         // given
-        final String token = String.format("Bearer %s", JwtHelper.generateToken(EMAIL_ADDRESS));
+        final String token = JwtHelper.generateTokenWithBearerPrefix(EMAIL_ADDRESS);
         // when, then
         assertThatThrownBy(() -> userService.getUserIdByToken(token))
                 .isInstanceOf(UsernameNotFoundException.class)

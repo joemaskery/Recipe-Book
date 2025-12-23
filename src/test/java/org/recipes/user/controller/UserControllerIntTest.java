@@ -3,7 +3,7 @@ package org.recipes.user.controller;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
-import org.recipes.IntegrationTest;
+import org.recipes.MariaDbIntegrationTest;
 import org.recipes.auth.security.JwtHelper;
 import org.recipes.testutils.RecipeHelper;
 import org.recipes.testutils.UserHelper;
@@ -19,9 +19,10 @@ import org.springframework.test.context.ActiveProfiles;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.recipes.testutils.UserHelper.USER_1;
+import static org.recipes.testutils.UserHelper.USER_1_TOKEN;
 
 @ActiveProfiles("test")
-public class UserControllerIntTest extends IntegrationTest {
+public class UserControllerIntTest extends MariaDbIntegrationTest {
 
     @Autowired
     UserRepository userRepository;
@@ -51,11 +52,9 @@ public class UserControllerIntTest extends IntegrationTest {
         // given
         recipeHelper.saveRecipes();
 
-        final String token = String.format("Bearer %s", JwtHelper.generateToken(USER_1.getEmail()));
-
         // when
         Response response = given()
-                .headers("Authorization", token)
+                .headers("Authorization", USER_1_TOKEN)
                 .when()
                 .get("/user/get-with-stats");
         final UserWithStats userResponse = response.as(UserWithStats.class);

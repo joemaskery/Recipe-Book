@@ -49,7 +49,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test:6.3.4'
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:mariadb'
-    testImplementation 'org.testcontainers:rabbitmq'
+    testImplementation 'org.testcontainers:mongodb'
     testImplementation 'io.rest-assured:rest-assured'
     testImplementation 'com.h2database:h2'
 }

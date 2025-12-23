@@ -1,5 +1,6 @@
 package org.recipes.testutils;
 
+import org.recipes.auth.security.JwtHelper;
 import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ public class UserHelper {
             .email("email1@domain.com")
             .avatar("avatar_1")
             .build();
+
+    public static final String USER_1_TOKEN = JwtHelper.generateTokenWithBearerPrefix(USER_1.getEmail());
 
     public static final UserEntity USER_2 = UserEntity.builder()
             .firstName("name2")

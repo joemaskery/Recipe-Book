@@ -3,7 +3,7 @@ package org.recipes.recipe.controller;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
-import org.recipes.IntegrationTest;
+import org.recipes.MariaDbIntegrationTest;
 import org.recipes.auth.security.JwtHelper;
 import org.recipes.commons.model.KeyValue;
 import org.recipes.recipe.dto.request.AddIngredientRequest;
@@ -24,7 +24,7 @@ import static org.recipes.testutils.UserHelper.USER_1;
 import static org.recipes.testutils.UserHelper.USER_2;
 
 @ActiveProfiles("test")
-class IngredientReferenceControllerIntTest extends IntegrationTest {
+class IngredientReferenceControllerIntTest extends MariaDbIntegrationTest {
 
     @Autowired IngredientReferenceRepository ingredientRepository;
     @Autowired UserHelper userHelper;

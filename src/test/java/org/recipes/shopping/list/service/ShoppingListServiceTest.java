@@ -1,18 +1,19 @@
-package org.recipes.recipe.service;
+package org.recipes.shopping.list.service;
 
 import org.junit.jupiter.api.Test;
+import org.recipes.recipe.service.RecipeIngredientService;
 import org.recipes.shopping.list.dto.request.BuildShoppingListRequest;
 import org.recipes.shopping.list.dto.response.ShoppingListSummary;
 import org.recipes.commons.model.QuantityType;
 import org.recipes.recipe.repository.RecipeIngredientRepository;
 import org.recipes.recipe.repository.dao.IngredientSummary;
 import org.recipes.shopping.list.repository.ShoppingListRepository;
-import org.recipes.shopping.list.service.ShoppingListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -26,6 +27,20 @@ class ShoppingListServiceTest {
     @MockBean RecipeIngredientRepository recipeIngredientRepository;
     @MockBean ShoppingListRepository shoppingListRepository;
     @Autowired ShoppingListService shoppingListService;
+
+    @Test
+    void buildShoppingList_returns_temporary_shopping_list_name() {
+        // given
+        Pattern expectedStringPattern = Pattern.compile(
+                "Shopping List \\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
+        );
+        // when
+        final ShoppingListSummary result
+                = shoppingListService.buildShoppingList(new BuildShoppingListRequest(List.of(12345)));
+        // then
+        assertThat(expectedStringPattern.matcher(result.getName()).matches())
+                .isTrue();
+    }
 
     @Test
     void buildShoppingList_builds_expected_shopping_list() {
@@ -57,8 +72,12 @@ class ShoppingListServiceTest {
         // given
         final BuildShoppingListRequest request = new BuildShoppingListRequest(List.of(12345));
         when(recipeIngredientRepository.findAllByRecipeIdIn(List.of(12345))).thenReturn(List.of());
-        // when, then
-        assertThat(shoppingListService.buildShoppingList(request))
+        // when
+        final ShoppingListSummary result = shoppingListService.buildShoppingList(request);
+        // then
+        assertThat(result.getName()).isNotNull();
+
+        assertThat(result)
                 .extracting(ShoppingListSummary::getItems)
                 .isEqualTo(List.of());
     }
