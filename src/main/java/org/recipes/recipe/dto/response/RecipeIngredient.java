@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.recipes.recipe.model.QuantityType;
+import org.recipes.commons.model.QuantityType;
 
 @Data
 @AllArgsConstructor

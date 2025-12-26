@@ -4,6 +4,15 @@ spring:
     username: jim
     password: password
 
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      username: jim
+      password: root_password
+      database: recipe-book-db
+      authentication-database: admin
+
   flyway:
     user: jim
     password: password

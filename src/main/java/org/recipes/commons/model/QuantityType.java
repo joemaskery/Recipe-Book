@@ -1,4 +1,4 @@
-package org.recipes.recipe.model;
+package org.recipes.commons.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

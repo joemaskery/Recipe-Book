@@ -7,7 +7,7 @@ import org.recipes.recipe.dto.request.AddIngredientRequest;
 import org.recipes.recipe.dto.response.ReferenceIngredient;
 import org.recipes.recipe.dto.response.ReferenceIngredientsResponse;
 import org.recipes.recipe.entity.IngredientEntity;
-import org.recipes.recipe.model.QuantityType;
+import org.recipes.commons.model.QuantityType;
 import org.recipes.recipe.repository.IngredientReferenceRepository;
 import org.recipes.user.service.UserService;
 import org.springframework.stereotype.Service;

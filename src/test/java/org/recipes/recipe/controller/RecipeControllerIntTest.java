@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.recipes.IntegrationTest;
+import org.recipes.MariaDbIntegrationTest;
 import org.recipes.auth.security.JwtHelper;
 import org.recipes.commons.exception.ErrorResponse;
 import org.recipes.recipe.dto.request.AddRecipeRequest;
@@ -15,7 +15,7 @@ import org.recipes.recipe.dto.request.IngredientInput;
 import org.recipes.recipe.dto.response.UserRecipe;
 import org.recipes.recipe.entity.RecipeEntity;
 import org.recipes.recipe.entity.RecipeIngredientEntity;
-import org.recipes.recipe.model.QuantityType;
+import org.recipes.commons.model.QuantityType;
 import org.recipes.recipe.repository.RecipeIngredientRepository;
 import org.recipes.recipe.repository.RecipeRepository;
 import org.recipes.testutils.IngredientHelper;
@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.recipes.testutils.UserHelper.USER_1;
+import static org.recipes.testutils.UserHelper.USER_1_TOKEN;
 import static org.recipes.testutils.builder.AddRecipeRequestTestBuilder.addRecipeRequest;
 import static org.recipes.testutils.builder.RecipeIngredientTestBuilder.cheese;
 import static org.recipes.testutils.builder.RecipeIngredientTestBuilder.garlicBread;
@@ -38,7 +39,7 @@ import static org.recipes.testutils.builder.RecipeIngredientTestBuilder.tomato;
 import static org.recipes.testutils.builder.RecipeTestBuilder.tomatoPastaRecipe;
 
 @ActiveProfiles("test")
-class RecipeControllerIntTest extends IntegrationTest {
+class RecipeControllerIntTest extends MariaDbIntegrationTest {
 
     private static final Integer USER_ID_1 = 1;
     private static final Integer RECIPE_ID_1 = 1;
@@ -80,11 +81,10 @@ class RecipeControllerIntTest extends IntegrationTest {
     void getUserRecipes_returns_all_user_recipes() {
         // given
         recipeHelper.saveRecipes();
-        final String token = String.format("Bearer %s", JwtHelper.generateToken(USER_1.getEmail()));
 
         // when
         Response response = given()
-                .header("Authorization", token)
+                .header("Authorization", USER_1_TOKEN)
                 .get("/recipe/get-for-user");
         final UserRecipe[] recipes = response.getBody().as(UserRecipe[].class);
 
@@ -138,12 +138,11 @@ class RecipeControllerIntTest extends IntegrationTest {
         // given
         userHelper.saveUsers();
         ingredientHelper.saveIngredients();
-        final String token = String.format("Bearer %s", JwtHelper.generateToken(USER_1.getEmail()));
 
         final AddRecipeRequest request = addRecipeRequest().build();
         // when
         final Response response = given()
-                .header("Authorization", token)
+                .header("Authorization", USER_1_TOKEN)
                 .body(request)
                 .contentType(ContentType.JSON)
                 .post("/recipe/add");
@@ -180,11 +179,10 @@ class RecipeControllerIntTest extends IntegrationTest {
         // given
         userHelper.saveUsers();
         ingredientHelper.saveIngredients();
-        final String token = String.format("Bearer %s", JwtHelper.generateToken(USER_1.getEmail()));
 
         // when
         final Response response = given()
-                .header("Authorization", token)
+                .header("Authorization", USER_1_TOKEN)
                 .body(request)
                 .contentType(ContentType.JSON)
                 .post("/recipe/add");

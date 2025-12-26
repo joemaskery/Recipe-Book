@@ -2,7 +2,7 @@ package org.recipes.recipe.repository.dao;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.recipes.recipe.model.QuantityType;
+import org.recipes.commons.model.QuantityType;
 
 @Data
 @AllArgsConstructor

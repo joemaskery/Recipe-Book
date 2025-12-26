@@ -4,14 +4,27 @@ services:
     image: mariadb:11.2.2
     container_name: recipe-book-db
     ports:
-      - 3306:3306
+      - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: recipe-book-db
       MYSQL_USER: jim
       MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root_password
     volumes:
       - mariadb-data:/var/lib/mysql
 
+  mongodb:
+    image: mongo:7
+    container_name: recipe-book-mongo-db
+    environment:
+      MONGO_INITDB_DATABASE: recipe-book-db
+      MONGO_INITDB_ROOT_USERNAME: jim
+      MONGO_INITDB_ROOT_PASSWORD: root_password
+    volumes:
+      - mongodb-data:/data/db
+    ports:
+      - "27017:27017"
+
 volumes:
   mariadb-data:
+  mongodb-data:
