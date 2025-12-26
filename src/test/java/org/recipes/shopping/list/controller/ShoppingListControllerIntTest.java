@@ -28,7 +28,7 @@ import static org.recipes.testutils.UserHelper.USER_1;
 import static org.recipes.testutils.UserHelper.USER_1_TOKEN;
 import static org.recipes.testutils.builder.ShoppingListItemInputTestBuilder.shoppingListItemInput;
 
-class ShoppingListControllerTest extends MongoDbIntegrationTest {
+class ShoppingListControllerIntTest extends MongoDbIntegrationTest {
 
     @MockBean RecipeIngredientRepository recipeIngredientRepository;
     @MockBean UserDetailsServiceImpl userDetailsService;
@@ -108,7 +108,7 @@ class ShoppingListControllerTest extends MongoDbIntegrationTest {
 
         assertThat(savedShoppingList)
                 .extracting(ShoppingList::getName, ShoppingList::getUser)
-                        .isEqualTo(List.of("this is a shopping list", USER_1.getEmail()));
+                .isEqualTo(List.of("this is a shopping list", USER_1.getEmail()));
 
         assertThat(savedShoppingList.getCreatedDate()).isNotNull();
 
