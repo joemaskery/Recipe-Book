@@ -2,7 +2,6 @@ package org.recipes;
 
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,16 +10,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MariaDBContainer;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Testcontainers
-public class MariaDbIntegrationTest {
+public abstract class MariaDbIntegrationTest {
+
+    static final MariaDBContainer<?> mariaDBContainer;
 
     @LocalServerPort Integer port;
     @Autowired JdbcTemplate jdbcTemplate;
 
-    static MariaDBContainer<?> mariaDBContainer = new MariaDBContainer<>("mariadb:11.2.2");
+    static {
+        mariaDBContainer = new MariaDBContainer<>("mariadb:11.2.2");
+        mariaDBContainer.start();
+    }
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -30,11 +32,6 @@ public class MariaDbIntegrationTest {
         registry.add("spring.flyway.url", mariaDBContainer::getJdbcUrl);
         registry.add("spring.flyway.user", mariaDBContainer::getUsername);
         registry.add("spring.flyway.password", mariaDBContainer::getPassword);
-    }
-
-    @BeforeAll
-    static void beforeAll() {
-        mariaDBContainer.start();
     }
 
     @BeforeEach
