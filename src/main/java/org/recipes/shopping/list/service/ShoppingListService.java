@@ -2,11 +2,11 @@ package org.recipes.shopping.list.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.recipes.commons.exception.NotFoundException;
 import org.recipes.commons.model.QuantityType;
 import org.recipes.recipe.repository.dao.IngredientSummary;
 import org.recipes.recipe.service.RecipeIngredientService;
 import org.recipes.shopping.list.dto.request.BuildShoppingListRequest;
-import org.recipes.shopping.list.dto.request.SaveShoppingListRequest;
 import org.recipes.shopping.list.dto.response.SavedShoppingListSummary;
 import org.recipes.shopping.list.dto.response.ShoppingListSummary;
 import org.recipes.shopping.list.entity.ShoppingList;
@@ -32,20 +32,28 @@ public class ShoppingListService {
     private final RecipeIngredientService recipeIngredientService;
     private final ShoppingListRepository shoppingListRepository;
 
-    public ShoppingListSummary buildShoppingList(final BuildShoppingListRequest request) {
+    public SavedShoppingListSummary buildAndSaveShoppingList(final BuildShoppingListRequest request) {
         final List<IngredientSummary> ingredients =
                 recipeIngredientService.getIngredientsForRecipeIds(request.getRecipeIds());
 
         if (CollectionUtils.isEmpty(ingredients)) {
             LOG.warn("Can't build shopping list - no ingredients found under request: {}", request);
-            return ShoppingListSummary.builder()
-                    .name(getShoppingListName())
-                    .items(List.of())
-                    .build();
+            throw new NotFoundException("Can't build shopping list - no ingredients were found");
         }
 
         LOG.debug("Retrieved {} ingredient summaries", ingredients.size());
 
+        final ShoppingListSummary shoppingListSummary = generateShoppingListSummary(ingredients);
+
+        final ShoppingList savedShoppingList = saveShoppingList(shoppingListSummary);
+
+        return new SavedShoppingListSummary(
+                savedShoppingList.getId(),
+                mapToShoppingListSummary(savedShoppingList)
+        );
+    }
+
+    private ShoppingListSummary generateShoppingListSummary(final List<IngredientSummary> ingredients) {
         final Map<Integer, List<IngredientSummary>> ingredientsByReferenceId = ingredients.stream()
                 .collect(Collectors.groupingBy(IngredientSummary::getIngredientRefId));
 
@@ -72,32 +80,26 @@ public class ShoppingListService {
 
         LOG.info("Calculated {} items for shopping list", shoppingList.getItems().size());
         LOG.trace("Shopping list items: {}", shoppingList.getItems());
-
         return shoppingList;
     }
 
-    public SavedShoppingListSummary saveShoppingList(final SaveShoppingListRequest request) {
-        LOG.trace("Saving shopping list: {}", request);
-        final ShoppingList shoppingList = mapToShoppingList(request);
+    private ShoppingList saveShoppingList(final ShoppingListSummary shoppingListSummary) {
+        LOG.trace("Saving shopping list: {}", shoppingListSummary);
+        final ShoppingList shoppingList = mapToShoppingList(shoppingListSummary);
         final ShoppingList savedShoppingList = shoppingListRepository.save(shoppingList);
         LOG.info("Saved shopping list: Name=[{}], ID=[{}]", savedShoppingList.getName(), savedShoppingList.getId());
-
-        return new SavedShoppingListSummary(
-                savedShoppingList.getId(),
-                mapToShoppingListSummary(savedShoppingList)
-        );
+        return savedShoppingList;
     }
 
-    private ShoppingList mapToShoppingList(final SaveShoppingListRequest request) {
+    private ShoppingList mapToShoppingList(final ShoppingListSummary summary) {
         return ShoppingList.builder()
-                .name(request.getName())
+                .name(summary.getName())
                 .user(getUserEmail())
-                .items(toShoppingListItems(request.getItems()))
+                .items(toShoppingListItems(summary.getItems()))
                 .build();
     }
 
-    private List<ShoppingListItem> toShoppingListItems(
-            final List<SaveShoppingListRequest.ShoppingListItemInput> items) {
+    private List<ShoppingListItem> toShoppingListItems(final List<ShoppingListSummary.ShoppingListItem> items) {
         return items.stream()
                 .map(item -> ShoppingListItem.builder()
                         .name(item.name())
