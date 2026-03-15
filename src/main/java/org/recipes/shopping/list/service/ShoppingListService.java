@@ -60,7 +60,7 @@ public class ShoppingListService {
     public SavedShoppingListSummary updateShoppingList(final UpdateShoppingListRequest request) {
         final ShoppingList shoppingList = shoppingListRepository.findById(request.getId())
                 .orElseThrow(() -> {
-                    LOG.error("Can't update shopping list - No Shopping List found with ID: {}", request.getId());
+                    LOG.warn("Can't update shopping list - No Shopping List found with ID: {}", request.getId());
                     return new NotFoundException("Can't update shopping list - no list found with ID: " + request.getId());
                 });
         LOG.trace("Shopping list to be updated: {}", shoppingList);
