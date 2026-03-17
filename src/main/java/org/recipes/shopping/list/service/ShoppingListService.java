@@ -56,11 +56,25 @@ public class ShoppingListService {
         );
     }
 
+    public SavedShoppingListSummary getShoppingListById(final String shoppingListId) {
+        final ShoppingList shoppingList = shoppingListRepository.findById(shoppingListId)
+                .orElseThrow(() -> {
+                    LOG.info("No shopping list found with ID: {}", shoppingListId);
+                    return new NotFoundException("No shopping list found with ID: " + shoppingListId);
+                });
+
+        LOG.info("Found and returning shopping list with ID: {}", shoppingListId);
+        return new SavedShoppingListSummary(
+                shoppingList.getId(),
+                mapToShoppingListSummary(shoppingList)
+        );
+    }
+
     @Transactional
     public SavedShoppingListSummary updateShoppingList(final UpdateShoppingListRequest request) {
         final ShoppingList shoppingList = shoppingListRepository.findById(request.getId())
                 .orElseThrow(() -> {
-                    LOG.warn("Can't update shopping list - No Shopping List found with ID: {}", request.getId());
+                    LOG.warn("Can't update shopping list - no list found with ID: {}", request.getId());
                     return new NotFoundException("Can't update shopping list - no list found with ID: " + request.getId());
                 });
         LOG.trace("Shopping list to be updated: {}", shoppingList);

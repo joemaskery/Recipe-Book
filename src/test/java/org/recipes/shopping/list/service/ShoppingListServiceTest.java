@@ -118,6 +118,13 @@ class ShoppingListServiceTest {
     }
 
     @Test
+    void getShoppingListById_throws_exception_if_shopping_list_is_not_found() {
+        assertThatThrownBy(() -> shoppingListService.getShoppingListById("nonexistent-shopping-list"))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("No shopping list found with ID: nonexistent-shopping-list");
+    }
+
+    @Test
     void updateShoppingList_throws_exception_if_shopping_list_is_not_found() {
         // given
         final UpdateShoppingListRequest request = UpdateShoppingListRequest.builder()
