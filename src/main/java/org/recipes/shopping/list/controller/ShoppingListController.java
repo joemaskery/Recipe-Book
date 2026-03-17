@@ -10,6 +10,8 @@ import org.recipes.shopping.list.service.ShoppingListService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +34,15 @@ public class ShoppingListController {
     public ResponseEntity<SavedShoppingListSummary> buildShoppingList(@RequestBody final BuildShoppingListRequest request) {
         LOG.info("Received request to build shopping list: {}", request);
         return ResponseEntity.ok(shoppingListService.buildAndSaveShoppingList(request));
+    }
+
+    @GetMapping(
+            value= {"/get/{shoppingListId}"},
+            produces = {"application/json"}
+    )
+    public ResponseEntity<SavedShoppingListSummary> getShoppingList(@PathVariable final String shoppingListId) {
+        LOG.info("Received request to get shopping list with ID: {}", shoppingListId);
+        return ResponseEntity.ok(shoppingListService.getShoppingListById(shoppingListId));
     }
 
     @PutMapping(
