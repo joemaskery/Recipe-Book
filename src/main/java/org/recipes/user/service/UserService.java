@@ -35,7 +35,6 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserWithStats getUserStatsByToken(final String token) {
-        LOG.trace("Attempting to retrieve user recipes by token: {}", token);
         final String userEmail = JwtHelper.extractUsernameWithBearer(token);
         LOG.trace("Extracted user email: {}", userEmail);
 

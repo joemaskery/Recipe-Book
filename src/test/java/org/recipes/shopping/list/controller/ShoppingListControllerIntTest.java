@@ -122,6 +122,37 @@ class ShoppingListControllerIntTest extends MongoDbIntegrationTest {
     }
 
     @Test
+    void shopping_list_get_for_user_returns_all_expected_shopping_lists() {
+        // given
+        final ShoppingList shoppingList = shoppingListRepository.save(ShoppingList.builder()
+                .name("Shopping list")
+                .user(USER_1.getEmail())
+                .items(List.of(
+                        new ShoppingListItem("Cheese", 50.0, QuantityType.GRAM, "Dairy"),
+                        new ShoppingListItem("Tomato", 15.0, QuantityType.ITEMS, "Fruit")))
+                .build());
+
+        // when
+        final Response response = given()
+                .header("Authorization", USER_1_TOKEN)
+                .get("/shopping-list/get-for-user");
+
+        final SavedShoppingListSummary[] listSummaries = response.as(SavedShoppingListSummary[].class);
+
+        // then
+        assertThat(listSummaries).singleElement()
+                .satisfies(listSummary -> {
+                    assertThat(listSummary.getId()).isEqualTo(shoppingList.getId());
+                    assertThat(listSummary.getName()).isEqualTo("Shopping list");
+
+                    assertThat(listSummary.getItems()).containsExactlyInAnyOrder(
+                            new ShoppingListSummary.ShoppingListItem("Cheese", 50.0, QuantityType.GRAM, "Dairy"),
+                            new ShoppingListSummary.ShoppingListItem("Tomato", 15.0, QuantityType.ITEMS, "Fruit")
+                    );
+                });
+    }
+
+    @Test
     void shopping_list_update_updates_shopping_list() {
         // given
         final ShoppingList originalList = shoppingListRepository.save(ShoppingList.builder()

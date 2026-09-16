@@ -3,6 +3,7 @@ package org.recipes.shopping.list.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.recipes.auth.security.JwtHelper;
 import org.recipes.commons.exception.NotFoundException;
 import org.recipes.commons.model.QuantityType;
 import org.recipes.recipe.repository.dao.IngredientSummary;
@@ -64,10 +65,20 @@ public class ShoppingListService {
                 });
 
         LOG.info("Found and returning shopping list with ID: {}", shoppingListId);
-        return new SavedShoppingListSummary(
-                shoppingList.getId(),
-                mapToShoppingListSummary(shoppingList)
-        );
+        return mapToSavedShoppingListSummary(shoppingList);
+    }
+
+    public List<SavedShoppingListSummary> getByUserToken(final String token) {
+        final String userEmail = JwtHelper.extractUsernameWithBearer(token);
+        LOG.trace("Extracted user email: {}", userEmail);
+
+        LOG.info("Fetching shopping lists for user {}", userEmail);
+        final List<ShoppingList> shoppingLists = shoppingListRepository.findByUser(userEmail);
+        LOG.debug("Found {} shopping lists for User {}", shoppingLists.size(), userEmail);
+
+        return shoppingLists.stream()
+                .map(this::mapToSavedShoppingListSummary)
+                .toList();
     }
 
     @Transactional
@@ -167,6 +178,13 @@ public class ShoppingListService {
         );
 
         return summary;
+    }
+
+    private SavedShoppingListSummary mapToSavedShoppingListSummary(final ShoppingList shoppingList) {
+        return new SavedShoppingListSummary(
+                shoppingList.getId(),
+                mapToShoppingListSummary(shoppingList)
+        );
     }
 
     private String getShoppingListName() {
