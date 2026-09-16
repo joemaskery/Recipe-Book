@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -42,11 +41,9 @@ public class ShoppingListController {
             value= {"/get-for-user"},
             produces = {"application/json"}
     )
-    public ResponseEntity<List<SavedShoppingListSummary>> getUserShoppingLists(
-            @RequestHeader("Authorization") final String token
-    ) {
+    public ResponseEntity<List<SavedShoppingListSummary>> getUserShoppingLists() {
         LOG.info("Received request to get user shopping lists");
-        return ResponseEntity.ok(shoppingListService.getByUserToken(token));
+        return ResponseEntity.ok(shoppingListService.getByUser());
     }
 
     @PostMapping(

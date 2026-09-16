@@ -144,6 +144,7 @@ class ShoppingListControllerIntTest extends MongoDbIntegrationTest {
                 .satisfies(listSummary -> {
                     assertThat(listSummary.getId()).isEqualTo(shoppingList.getId());
                     assertThat(listSummary.getName()).isEqualTo("Shopping list");
+                    assertThat(listSummary.getDate()).isNotNull();
 
                     assertThat(listSummary.getItems()).containsExactlyInAnyOrder(
                             new ShoppingListSummary.ShoppingListItem("Cheese", 50.0, QuantityType.GRAM, "Dairy"),

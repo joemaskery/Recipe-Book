@@ -3,7 +3,6 @@ package org.recipes.shopping.list.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.recipes.auth.security.JwtHelper;
 import org.recipes.commons.exception.NotFoundException;
 import org.recipes.commons.model.QuantityType;
 import org.recipes.recipe.repository.dao.IngredientSummary;
@@ -21,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -51,10 +51,7 @@ public class ShoppingListService {
 
         final ShoppingList savedShoppingList = saveShoppingList(shoppingListSummary);
 
-        return new SavedShoppingListSummary(
-                savedShoppingList.getId(),
-                mapToShoppingListSummary(savedShoppingList)
-        );
+        return mapToSavedShoppingListSummary(savedShoppingList);
     }
 
     public SavedShoppingListSummary getShoppingListById(final String shoppingListId) {
@@ -68,8 +65,8 @@ public class ShoppingListService {
         return mapToSavedShoppingListSummary(shoppingList);
     }
 
-    public List<SavedShoppingListSummary> getByUserToken(final String token) {
-        final String userEmail = JwtHelper.extractUsernameWithBearer(token);
+    public List<SavedShoppingListSummary> getByUser() {
+        final String userEmail = getUserEmail();
         LOG.trace("Extracted user email: {}", userEmail);
 
         LOG.info("Fetching shopping lists for user {}", userEmail);
@@ -96,10 +93,7 @@ public class ShoppingListService {
         shoppingListRepository.save(shoppingList);
 
         LOG.info("Successfully updated shopping list: {}", shoppingList.getId());
-        return new SavedShoppingListSummary(
-                shoppingList.getId(),
-                mapToShoppingListSummary(shoppingList)
-        );
+        return mapToSavedShoppingListSummary(shoppingList);
     }
 
     private ShoppingListSummary generateShoppingListSummary(final List<IngredientSummary> ingredients) {
@@ -183,6 +177,7 @@ public class ShoppingListService {
     private SavedShoppingListSummary mapToSavedShoppingListSummary(final ShoppingList shoppingList) {
         return new SavedShoppingListSummary(
                 shoppingList.getId(),
+                getShoppingListDate(shoppingList),
                 mapToShoppingListSummary(shoppingList)
         );
     }
@@ -199,5 +194,15 @@ public class ShoppingListService {
         final UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
         return userDetails.getUsername();
+    }
+
+    private LocalDate getShoppingListDate(final ShoppingList shoppingList) {
+        if (shoppingList.getModifiedDate() != null) {
+            return shoppingList.getModifiedDate().toLocalDate();
+        } else if (shoppingList.getCreatedDate() != null) {
+            return shoppingList.getCreatedDate().toLocalDate();
+        } else {
+            return null;
+        }
     }
 }
