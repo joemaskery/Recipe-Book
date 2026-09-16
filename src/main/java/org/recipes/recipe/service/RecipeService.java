@@ -27,36 +27,35 @@ public class RecipeService {
 
     public List<UserRecipe> getByUserId(final Integer userId) {
         List<RecipeEntity> recipeEntities = this.recipeRepository.findAllByUserId(userId);
-        LOG.debug("[RecipeService] Found {} recipes for User {}", recipeEntities.size(), userId);
+        LOG.debug("Found {} recipes for User {}", recipeEntities.size(), userId);
         return mapToUserRecipes(recipeEntities);
     }
 
     public List<UserRecipe> getByUserToken(final String token) {
-        LOG.trace("Attempting to retrieve user recipes by token: {}", token);
         final String userEmail = JwtHelper.extractUsernameWithBearer(token);
         LOG.trace("Extracted user email: {}", userEmail);
 
         LOG.info("Fetching recipes for user {}", userEmail);
-        List<RecipeEntity> recipeEntities = this.recipeRepository.findAllByUserEmail(userEmail);
-        LOG.debug("[RecipeService] Found {} recipes for User {}", recipeEntities.size(), userEmail);
+        final List<RecipeEntity> recipeEntities = this.recipeRepository.findAllByUserEmail(userEmail);
+        LOG.debug("Found {} recipes for User {}", recipeEntities.size(), userEmail);
         return mapToUserRecipes(recipeEntities);
     }
 
     public UserRecipe getRecipeById(final Integer recipeId) {
-        RecipeEntity recipeEntity = this.recipeRepository.findById(recipeId)
+        final RecipeEntity recipeEntity = this.recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new EntityNotFoundException("No recipe found with ID " + recipeId));
 
-        LOG.debug("[RecipeService] Found recipe for with recipeId {}", recipeId);
+        LOG.debug("Found recipe for with recipeId {}", recipeId);
         return mapToUserRecipe(recipeEntity);
     }
 
     @Transactional
     public UserRecipe addRecipe(final String token, final AddRecipeRequest request) {
         final Integer userId = userService.getUserIdByToken(token);
-        LOG.info("[RecipeService] Saving recipe {} for user {}", request.getName(), userId);
-        LOG.debug("[RecipeService] Saving recipe: {}", request);
+        LOG.info("Saving recipe {} for user {}", request.getName(), userId);
+        LOG.debug("Saving recipe: {}", request);
         final RecipeEntity savedRecipe = recipeRepository.save(toRecipe(userId, request));
-        LOG.info("[RecipeService] Saved new recipe with ID: {}", savedRecipe.getRecipeId());
+        LOG.info("Saved new recipe with ID: {}", savedRecipe.getRecipeId());
         return mapToUserRecipe(savedRecipe);
     }
 
