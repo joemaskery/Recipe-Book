@@ -2,10 +2,19 @@ package org.recipes.user.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.recipes.user.dto.*;
+import org.recipes.user.dto.UpdateUserRequest;
+import org.recipes.user.dto.User;
+import org.recipes.user.dto.UserWithStats;
 import org.recipes.user.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -25,9 +34,9 @@ public class UserController {
     }
 
     @GetMapping("/get-with-stats")
-    public ResponseEntity<UserWithStats> getUserWithStats(@RequestHeader(name="Authorization") final String token) {
-        LOG.info("[UserController] Received request to get user details and stats from auth token");
-        return ResponseEntity.ok(this.userService.getUserStatsByToken(token));
+    public ResponseEntity<UserWithStats> getUserWithStats() {
+        LOG.info("[UserController] Received request to get stats and details of logged in user");
+        return ResponseEntity.ok(this.userService.getLoggedInUserStats());
     }
 
     @GetMapping("/get-all")

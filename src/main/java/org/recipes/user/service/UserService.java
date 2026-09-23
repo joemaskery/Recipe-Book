@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.recipes.auth.service.CurrentUserService;
 import org.recipes.commons.exception.NotFoundException;
 import org.recipes.commons.exception.UserValidationException;
-import org.recipes.auth.security.JwtHelper;
 import org.recipes.user.dto.AddUserRequest;
 import org.recipes.user.dto.UpdateUserRequest;
 import org.recipes.user.dto.User;
@@ -16,8 +16,6 @@ import org.recipes.user.dto.UserStats;
 import org.recipes.user.dto.UserWithStats;
 import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.UserRepository;
-import org.recipes.user.repository.dto.UserEntityId;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,9 +31,10 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final CurrentUserService currentUserService;
 
-    public UserWithStats getUserStatsByToken(final String token) {
-        final String userEmail = JwtHelper.extractUsernameWithBearer(token);
+    public UserWithStats getLoggedInUserStats() {
+        final String userEmail = currentUserService.getUserEmail();
         LOG.trace("Extracted user email: {}", userEmail);
 
         final UserDetailsAndStats userDetails = userRepository.findUserWithStatsByEmail(userEmail)
@@ -89,17 +88,6 @@ public class UserService {
             updateUserFields(user, request);
             return mapToUser(user);
         }
-    }
-
-    public Integer getUserIdByToken(final String token) {
-        LOG.trace("[UserService] Attempting to extract user email from token: {}", token);
-        final String userEmail = JwtHelper.extractUsernameWithBearer(token);
-        LOG.trace("[UserService] Extracted user email: {}", userEmail);
-
-        final UserEntityId userId = userRepository.findUserIdByEmail(userEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + userEmail));
-        LOG.trace("[UserService] Retrieved userId {} for email {}", userId, userEmail);
-        return userId.userId();
     }
 
     private User mapOptionalEntityToUser(final String description, final Supplier<Optional<UserEntity>> function) {

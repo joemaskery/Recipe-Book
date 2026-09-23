@@ -42,8 +42,8 @@ public class ShoppingListController {
             produces = {"application/json"}
     )
     public ResponseEntity<List<SavedShoppingListSummary>> getUserShoppingLists() {
-        LOG.info("Received request to get user shopping lists");
-        return ResponseEntity.ok(shoppingListService.getByUser());
+        LOG.info("Received request to get shopping lists for logged in user");
+        return ResponseEntity.ok(shoppingListService.getForLoggedInUser());
     }
 
     @PostMapping(

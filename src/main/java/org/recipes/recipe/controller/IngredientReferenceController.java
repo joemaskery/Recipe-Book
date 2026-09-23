@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -25,10 +24,9 @@ public class IngredientReferenceController {
     private final IngredientReferenceService ingredientReferenceService;
 
     @GetMapping("get-for-user")
-    public ResponseEntity<ReferenceIngredientsResponse> getUserIngredients(
-            @RequestHeader(name="Authorization") final String token) {
-        LOG.info("Received request to get reference ingredients");
-        return ResponseEntity.ok(ingredientReferenceService.getAllForUser(token));
+    public ResponseEntity<ReferenceIngredientsResponse> getUserIngredients() {
+        LOG.info("Received request to get reference ingredients for logged in user");
+        return ResponseEntity.ok(ingredientReferenceService.getAllForLoggedInUser());
     }
 
     @PostMapping("/add")

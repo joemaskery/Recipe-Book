@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,9 +33,9 @@ public class RecipeController {
     }
 
     @GetMapping("/get-for-user")
-    public ResponseEntity<List<UserRecipe>> getUserRecipes(@RequestHeader(name="Authorization") final String token) {
-        LOG.info("[RecipeController] Received request to get user recipes");
-        return ResponseEntity.ok(this.recipeService.getByUserToken(token));
+    public ResponseEntity<List<UserRecipe>> getUserRecipes() {
+        LOG.info("[RecipeController] Received request to get recipes for logged in user");
+        return ResponseEntity.ok(this.recipeService.getLoggedInUserRecipes());
     }
 
     @GetMapping("/{recipeId}")
@@ -46,10 +45,9 @@ public class RecipeController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<UserRecipe> addRecipe(@RequestHeader(name="Authorization") final String token,
-                                                @Valid @RequestBody final AddRecipeRequest request) {
-        LOG.info("[RecipeController] Received request to add recipe {}", request.getName());
-        return ResponseEntity.ok(this.recipeService.addRecipe(token, request));
+    public ResponseEntity<UserRecipe> addRecipe(@Valid @RequestBody final AddRecipeRequest request) {
+        LOG.info("[RecipeController] Received request to add recipe {} for logged in user", request.getName());
+        return ResponseEntity.ok(this.recipeService.addRecipeForLoggedInUser(request));
     }
 
 }

@@ -1,6 +1,5 @@
 package org.recipes.shopping.list.service;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.recipes.auth.service.CurrentUserService;
 import org.recipes.commons.exception.NotFoundException;
 import org.recipes.commons.model.QuantityType;
 import org.recipes.recipe.repository.RecipeIngredientRepository;
@@ -21,9 +21,6 @@ import org.recipes.shopping.list.dto.response.SavedShoppingListSummary;
 import org.recipes.shopping.list.dto.response.ShoppingListSummary;
 import org.recipes.shopping.list.entity.ShoppingList;
 import org.recipes.shopping.list.repository.ShoppingListRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,26 +41,19 @@ class ShoppingListServiceTest {
 
     @Mock RecipeIngredientRepository recipeIngredientRepository;
     @Mock ShoppingListRepository shoppingListRepository;
+    @Mock CurrentUserService currentUserService;
 
     ShoppingListService shoppingListService;
-
-    @BeforeAll
-    static void setupSecurityContext() {
-        Authentication authentication = Mockito.mock(Authentication.class);
-        Mockito.when(authentication.getPrincipal()).thenReturn(USER_1);
-
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-
-        SecurityContextHolder.setContext(securityContext);
-    }
 
     @BeforeEach
     void setUp() {
         shoppingListService = new ShoppingListService(
                 new RecipeIngredientService(recipeIngredientRepository),
-                shoppingListRepository
+                shoppingListRepository,
+                currentUserService
         );
+
+        lenient().when(currentUserService.getUserEmail()).thenReturn(USER_1.getEmail());
     }
 
     @Test
@@ -135,9 +125,9 @@ class ShoppingListServiceTest {
 
     @ParameterizedTest
     @MethodSource("shoppingListDates")
-    void getByUserToken_maps_expected_shopping_list_date(final LocalDateTime createdDate,
-                                                         final LocalDateTime modifiedDate,
-                                                         final LocalDate expectedDate) {
+    void getForLoggedInUserToken_maps_expected_shopping_list_date(final LocalDateTime createdDate,
+                                                                  final LocalDateTime modifiedDate,
+                                                                  final LocalDate expectedDate) {
         // given
         final String email = USER_1.getEmail();
         final ShoppingList shoppingList = Mockito.mock(ShoppingList.class);
@@ -148,7 +138,7 @@ class ShoppingListServiceTest {
         when(shoppingListRepository.findByUser(email)).thenReturn(List.of(shoppingList));
 
         // when, then
-        assertThat(shoppingListService.getByUser())
+        assertThat(shoppingListService.getForLoggedInUser())
                 .extracting(SavedShoppingListSummary::getDate)
                 .containsExactly(expectedDate);
     }

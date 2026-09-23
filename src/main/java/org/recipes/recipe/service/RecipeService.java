@@ -4,7 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.recipes.auth.security.JwtHelper;
+import org.recipes.auth.service.CurrentUserService;
 import org.recipes.recipe.dto.request.AddRecipeRequest;
 import org.recipes.recipe.dto.request.IngredientInput;
 import org.recipes.recipe.dto.response.RecipeIngredient;
@@ -12,7 +12,6 @@ import org.recipes.recipe.dto.response.UserRecipe;
 import org.recipes.recipe.entity.RecipeEntity;
 import org.recipes.recipe.entity.RecipeIngredientEntity;
 import org.recipes.recipe.repository.RecipeRepository;
-import org.recipes.user.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,21 +22,21 @@ import java.util.List;
 public class RecipeService {
 
     private final RecipeRepository recipeRepository;
-    private final UserService userService;
+    private final CurrentUserService currentUserService;
 
     public List<UserRecipe> getByUserId(final Integer userId) {
         List<RecipeEntity> recipeEntities = this.recipeRepository.findAllByUserId(userId);
-        LOG.debug("Found {} recipes for User {}", recipeEntities.size(), userId);
+        LOG.info("Found {} recipes for User {}", recipeEntities.size(), userId);
         return mapToUserRecipes(recipeEntities);
     }
 
-    public List<UserRecipe> getByUserToken(final String token) {
-        final String userEmail = JwtHelper.extractUsernameWithBearer(token);
-        LOG.trace("Extracted user email: {}", userEmail);
+    public List<UserRecipe> getLoggedInUserRecipes() {
+        final Integer userId = currentUserService.getUserId();
+        LOG.trace("Logged in user ID: {}", userId);
 
-        LOG.info("Fetching recipes for user {}", userEmail);
-        final List<RecipeEntity> recipeEntities = this.recipeRepository.findAllByUserEmail(userEmail);
-        LOG.debug("Found {} recipes for User {}", recipeEntities.size(), userEmail);
+        LOG.info("Fetching recipes for user {}", userId);
+        final List<RecipeEntity> recipeEntities = this.recipeRepository.findAllByUserId(userId);
+        LOG.info("Found {} recipes for User {}", recipeEntities.size(), userId);
         return mapToUserRecipes(recipeEntities);
     }
 
@@ -45,13 +44,13 @@ public class RecipeService {
         final RecipeEntity recipeEntity = this.recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new EntityNotFoundException("No recipe found with ID " + recipeId));
 
-        LOG.debug("Found recipe for with recipeId {}", recipeId);
+        LOG.debug("Found recipe with recipeId {}", recipeId);
         return mapToUserRecipe(recipeEntity);
     }
 
     @Transactional
-    public UserRecipe addRecipe(final String token, final AddRecipeRequest request) {
-        final Integer userId = userService.getUserIdByToken(token);
+    public UserRecipe addRecipeForLoggedInUser(final AddRecipeRequest request) {
+        final Integer userId = currentUserService.getUserId();
         LOG.info("Saving recipe {} for user {}", request.getName(), userId);
         LOG.debug("Saving recipe: {}", request);
         final RecipeEntity savedRecipe = recipeRepository.save(toRecipe(userId, request));

@@ -3,6 +3,7 @@ package org.recipes.shopping.list.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.recipes.auth.service.CurrentUserService;
 import org.recipes.commons.exception.NotFoundException;
 import org.recipes.commons.model.QuantityType;
 import org.recipes.recipe.repository.dao.IngredientSummary;
@@ -14,9 +15,6 @@ import org.recipes.shopping.list.dto.response.ShoppingListSummary;
 import org.recipes.shopping.list.entity.ShoppingList;
 import org.recipes.shopping.list.entity.ShoppingListItem;
 import org.recipes.shopping.list.repository.ShoppingListRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -34,6 +32,7 @@ public class ShoppingListService {
 
     private final RecipeIngredientService recipeIngredientService;
     private final ShoppingListRepository shoppingListRepository;
+    private final CurrentUserService currentUserService;
 
     @Transactional
     public SavedShoppingListSummary buildAndSaveShoppingList(final BuildShoppingListRequest request) {
@@ -65,9 +64,9 @@ public class ShoppingListService {
         return mapToSavedShoppingListSummary(shoppingList);
     }
 
-    public List<SavedShoppingListSummary> getByUser() {
-        final String userEmail = getUserEmail();
-        LOG.trace("Extracted user email: {}", userEmail);
+    public List<SavedShoppingListSummary> getForLoggedInUser() {
+        final String userEmail = currentUserService.getUserEmail();
+        LOG.trace("Logged in user email: {}", userEmail);
 
         LOG.info("Fetching shopping lists for user {}", userEmail);
         final List<ShoppingList> shoppingLists = shoppingListRepository.findByUser(userEmail);
@@ -137,7 +136,7 @@ public class ShoppingListService {
     private ShoppingList mapToShoppingList(final ShoppingListSummary summary) {
         return ShoppingList.builder()
                 .name(summary.getName())
-                .user(getUserEmail())
+                .user(currentUserService.getUserEmail())
                 .items(mapShoppingListSummaryItems(summary.getItems()))
                 .build();
     }
@@ -187,13 +186,6 @@ public class ShoppingListService {
         final String formatted = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
         return String.format("Shopping List %s", formatted);
-    }
-
-    private String getUserEmail() {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
-        return userDetails.getUsername();
     }
 
     private LocalDate getShoppingListDate(final ShoppingList shoppingList) {
