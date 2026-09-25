@@ -5,18 +5,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.recipes.auth.security.JwtHelper;
+import org.recipes.auth.service.CurrentUserService;
 import org.recipes.commons.exception.NotFoundException;
 import org.recipes.commons.exception.UserValidationException;
-import org.recipes.auth.security.JwtHelper;
 import org.recipes.user.dto.AddUserRequest;
 import org.recipes.user.dto.UpdateUserRequest;
 import org.recipes.user.repository.UserRepository;
-import org.recipes.user.repository.dto.UserEntityId;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
@@ -28,15 +26,16 @@ class UserServiceTest {
     private static final String EMAIL_ADDRESS = "test-email@email.com";
 
     @Mock UserRepository userRepository;
+    @Mock CurrentUserService currentUserService;
     @InjectMocks UserService userService;
 
     @Test
-    void getUserStatsByToken_throws_exception_for_unknown_user() {
+    void getLoggedInUserStats_throws_exception_for_unknown_user() {
         // given
-        final String token = JwtHelper.generateTokenWithBearerPrefix(EMAIL_ADDRESS);
+        when(currentUserService.getUserEmail()).thenReturn(EMAIL_ADDRESS);
         when(userRepository.findUserWithStatsByEmail(EMAIL_ADDRESS)).thenReturn(Optional.empty());
         // then
-        assertThatThrownBy(() -> userService.getUserStatsByToken(token))
+        assertThatThrownBy(() -> userService.getLoggedInUserStats())
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("User not found");
     }
@@ -103,24 +102,5 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.addUser(addUserRequest))
                 .isInstanceOf(UserValidationException.class)
                 .hasMessage(EMAIL_ALREADY_IN_USE_MESSAGE);
-    }
-
-    @Test
-    void getUserIdByToken_returns_user_id() {
-        // given
-        final String token = JwtHelper.generateTokenWithBearerPrefix(EMAIL_ADDRESS);
-        when(userRepository.findUserIdByEmail(EMAIL_ADDRESS)).thenReturn(Optional.of(new UserEntityId(123)));
-        // when, then
-        assertThat(userService.getUserIdByToken(token)).isEqualTo(123);
-    }
-
-    @Test
-    void getUserIdByToken_throws_exception_if_email_does_not_exist() {
-        // given
-        final String token = JwtHelper.generateTokenWithBearerPrefix(EMAIL_ADDRESS);
-        // when, then
-        assertThatThrownBy(() -> userService.getUserIdByToken(token))
-                .isInstanceOf(UsernameNotFoundException.class)
-                .hasMessage("User not found with email: " + EMAIL_ADDRESS);
     }
 }

@@ -19,7 +19,7 @@ import org.recipes.shopping.list.dto.response.ShoppingListSummary;
 import org.recipes.shopping.list.entity.ShoppingList;
 import org.recipes.shopping.list.entity.ShoppingListItem;
 import org.recipes.shopping.list.repository.ShoppingListRepository;
-import org.recipes.user.service.UserDetailsServiceImpl;
+import org.recipes.testutils.UserHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -35,13 +35,13 @@ import static org.recipes.testutils.UserHelper.USER_1_TOKEN;
 class ShoppingListControllerIntTest extends MongoDbIntegrationTest {
 
     @MockBean RecipeIngredientRepository recipeIngredientRepository;
-    @MockBean UserDetailsServiceImpl userDetailsService;
-
     @Autowired ShoppingListRepository shoppingListRepository;
+
+    @Autowired UserHelper userHelper;
 
     @BeforeEach
     void setUp() {
-        when(userDetailsService.loadUserByUsername(USER_1.getEmail())).thenReturn(USER_1);
+        userHelper.saveUsers();
     }
 
     @Test

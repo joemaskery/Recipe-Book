@@ -2,7 +2,7 @@ package org.recipes.auth.config;
 
 import lombok.AllArgsConstructor;
 import org.recipes.auth.security.JwtAuthFilter;
-import org.recipes.user.service.UserDetailsServiceImpl;
+import org.recipes.auth.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

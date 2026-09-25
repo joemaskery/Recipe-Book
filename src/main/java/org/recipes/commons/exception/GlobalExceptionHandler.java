@@ -37,4 +37,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(errorMessages));
     }
+
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleNotFoundException(final NoLoggedInUserException exception) {
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse(List.of(exception.getMessage())));
+    }
 }

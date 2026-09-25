@@ -1,7 +1,9 @@
-package org.recipes.user.service;
+package org.recipes.auth.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.recipes.auth.model.MyUserDetails;
+import org.recipes.user.entity.UserEntity;
 import org.recipes.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,8 +19,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(final String email) {
-        return userRepository.findUserByEmail(email)
+        final UserEntity userEntity = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        return new MyUserDetails(userEntity);
     }
 
 }

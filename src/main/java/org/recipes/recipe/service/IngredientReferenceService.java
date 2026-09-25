@@ -2,14 +2,14 @@ package org.recipes.recipe.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.recipes.auth.service.CurrentUserService;
 import org.recipes.commons.model.KeyValue;
+import org.recipes.commons.model.QuantityType;
 import org.recipes.recipe.dto.request.AddIngredientRequest;
 import org.recipes.recipe.dto.response.ReferenceIngredient;
 import org.recipes.recipe.dto.response.ReferenceIngredientsResponse;
 import org.recipes.recipe.entity.IngredientEntity;
-import org.recipes.commons.model.QuantityType;
 import org.recipes.recipe.repository.IngredientReferenceRepository;
-import org.recipes.user.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -21,7 +21,7 @@ import java.util.List;
 public class IngredientReferenceService {
 
     private final IngredientReferenceRepository ingredientRepository;
-    private final UserService userService;
+    private final CurrentUserService currentUserService;
 
     public ReferenceIngredient addIngredient(final AddIngredientRequest request) {
         LOG.debug("[IngredientReferenceService] Saving ingredient: {}", request);
@@ -30,8 +30,8 @@ public class IngredientReferenceService {
         return toReferenceIngredient(savedIngredient);
     }
 
-    public ReferenceIngredientsResponse getAllForUser(final String userToken) {
-        final Integer userId = userService.getUserIdByToken(userToken);
+    public ReferenceIngredientsResponse getAllForLoggedInUser() {
+        final Integer userId = currentUserService.getUserId();
         final List<IngredientEntity> ingredientEntities = ingredientRepository
                 .findAllByUserIdEqualsOrAllUsersIsTrue(userId);
         LOG.debug("Found {} ingredients for user {}", ingredientEntities.size(), userId);
@@ -73,5 +73,4 @@ public class IngredientReferenceService {
                 .allUsers(false)
                 .build();
     }
-
 }
