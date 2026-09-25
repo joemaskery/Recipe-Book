@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.recipes.auth.model.MyUserDetails;
+import org.recipes.commons.exception.NoLoggedInUserException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -45,8 +46,8 @@ class CurrentUserServiceTest {
         SecurityContextHolder.clearContext();
         // when, then
         assertThatThrownBy(() -> currentUserService.getUserId())
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("No authenticated user");
+                .isInstanceOf(NoLoggedInUserException.class)
+                .hasMessage("Couldn't find authenticated user");
     }
 
     @Test
@@ -72,7 +73,7 @@ class CurrentUserServiceTest {
         SecurityContextHolder.clearContext();
         // when, then
         assertThatThrownBy(() -> currentUserService.getUserEmail())
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("No authenticated user");
+                .isInstanceOf(NoLoggedInUserException.class)
+                .hasMessage("Couldn't find authenticated user");
     }
 }

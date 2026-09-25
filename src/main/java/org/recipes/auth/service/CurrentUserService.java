@@ -1,6 +1,7 @@
 package org.recipes.auth.service;
 
 import org.recipes.auth.model.MyUserDetails;
+import org.recipes.commons.exception.NoLoggedInUserException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,7 @@ public class CurrentUserService {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !(authentication.getPrincipal() instanceof MyUserDetails user)) {
-            throw new IllegalStateException("No authenticated user");
+            throw new NoLoggedInUserException("Couldn't find authenticated user");
         }
 
         return user;
